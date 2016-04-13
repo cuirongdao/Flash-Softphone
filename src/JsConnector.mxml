@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600" implements="connector.ClientFunction"
+			   creationComplete="initApps()">
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[  
+			import connector.TCPconnector;
+			
+			import flash.external.*;
+			
+			import mx.controls.Alert;
+			
+			var tcpconn:TCPconnector = new TCPconnector();
+			
+			public function initApp(ServerAddress:String,port:String):void{
+				var ports:int = Number(port)
+				tcpconn.initApp(ServerAddress,ports);
+			} 
+			
+			
+			public function initCTI():void{
+				tcpconn.initCTI();
+			}
+			
+			public function monitorDevice(DeviceId:String):void{
+				tcpconn.monitorDevice(DeviceId);
+			}
+			
+			public function stopMonitorDevice(DeviceId:String):void{
+				tcpconn.stopMonitorDevice(DeviceId);
+			}
+			
+			public function setAgentState(requestName:String,deviceId:String,username:String,password:String,skill:String,AgentMode:String,func:String,Suspendreason:String):void{
+				tcpconn.setAgentState(requestName,deviceId,username,password,skill,AgentMode,func,Suspendreason);
+			}
+			
+			public function makecall(deviceId:String,dnis:String,uui:String):void{
+				tcpconn.makecall(deviceId,dnis,uui);
+			}
+			
+			public function answerCall(deviceId:String,CallId:String):void{
+				tcpconn.answerCall(deviceId,CallId);
+			}
+			
+			public function DisconnectCall(deviceId:String,CallId:String):void{
+				tcpconn.DisconnectCall(deviceId,CallId);
+			}
+			
+			public function holdCall(deviceId:String,CallId:String):void{
+				tcpconn.holdCall(deviceId,CallId);
+			}
+			
+			public function RetrieveCall(deviceId:String,CallId:String):void{
+				tcpconn.RetrieveCall(deviceId,CallId);
+			}
+			
+			public function SingleStepTransferCall(deviceId:String,CallId:String,Transferdeivce:String,UUI:String):void{
+				tcpconn.SingleStepTransferCall(deviceId,CallId,Transferdeivce,UUI);
+			}
+			
+			public function transferCall(KeepdeviceId:String,KeepCallId:String,NowCallId:String):void{
+				tcpconn.transferCall(KeepdeviceId,KeepCallId,NowCallId);
+			}
+			
+			public function conferenceCall(KeepdeviceId:String,KeepCallId:String,NowCallId:String):void{
+				tcpconn.conferenceCall(KeepdeviceId,KeepCallId,NowCallId);
+			}
+			
+			public function reconnectCall(KeepdeviceId:String,KeepCallId:String,NowdeviceId:String,NowCallId:String):void{
+				tcpconn.reconnectCall(KeepdeviceId,KeepCallId,NowdeviceId,NowCallId);
+			}
+			
+			public function SingleStepConference(ConferenceDevice:String,ConferencedDevice:String,NowCallId:String,UUI:String):void{
+				tcpconn.SingleStepConference(ConferenceDevice,ConferencedDevice,NowCallId,UUI);
+			}
+			
+			
+			
+			
+			
+			public	function OninitServer():void{ 
+				ExternalInterface.call("OninitServer");
+			}
+			
+			public	function OnQueryAgentState(agentid:String,result:String,agentstat:String,logindevice:String,skilllist:String,failNO:String):void{
+				ExternalInterface.call("OnQueryAgentState",agentid,result,agentstat,logindevice,skilllist,failNO);
+			}
+			
+			public	function OnTCPclose():void{
+				ExternalInterface.call("OnTCPclose");
+			}
+			
+			public	function remotingSayHello(deviceId:String,logMessage:String):void{
+				
+			}
+			
+			public	function OninitApp(sessionId:String):void{
+				ExternalInterface.call("OninitApp",sessionId);
+			}
+			
+			public	function OnMonitorDevice(deviceID:String):void{
+				ExternalInterface.call("OnMonitorDevice",deviceID);
+			}
+			
+			public	function OnstopMonitorDevice(sessionId:String,deviceId:String,Result:String,Code:String):void{
+				ExternalInterface.call("OnstopMonitorDevice",sessionId,deviceId,Result,Code);
+			}
+			
+			public	function OnSeizedEvt(source:String,timestamp:String,initiatedDevice:String,contactId:String,callId:String,deviceId:String,connectionState:String,srcDeviceId:String,_sessionId:String):void{
+				ExternalInterface.call("OnSeizedEvt",source,timestamp,initiatedDevice,contactId,callId,deviceId,connectionState,srcDeviceId,_sessionId);
+			}
+			
+			public	function OnConnectionCleared(source:String,timestamp:String,releasingDevice:String,contactId:String,callId:String,deviceId:String,connectionState:String,srcDeviceId:String,_sessionId:String):void{
+				ExternalInterface.call("OnConnectionCleared",source,timestamp,releasingDevice,contactId,callId,deviceId,connectionState,srcDeviceId,_sessionId);
+			}
+			
+			public	function OnagentNotReady(source:String,timestamp:String,reason:String,deviceId:String,agentId:String,agentMode:String,srcDeviceId:String,_sessionId:String):void{
+				ExternalInterface.call("OnagentNotReady",source,timestamp,reason,deviceId,agentId,agentMode,srcDeviceId,_sessionId);
+			}
+			
+			public	function OnagentLoggedOn(source:String,timestamp:String,groupId:String,deviceId:String,agentId:String,agentMode:String,srcDeviceId:String,_sessionId:String):void{
+				ExternalInterface.call("OnagentLoggedOn",source,timestamp,groupId,deviceId,agentId,agentMode,srcDeviceId,_sessionId);
+			}
+			
+			public	function OnagentReady(source:String,timestamp:String,deviceId:String,agentId:String,agentMode:String,srcDeviceId:String,_sessionId:String):void{
+				ExternalInterface.call("OnagentReady",source,timestamp,deviceId,agentId,agentMode,srcDeviceId,_sessionId);
+			}
+			
+			public	function OnagentLoggedOff(source:String,timestamp:String,deviceId:String,agentId:String,agentMode:String,srcDeviceId:String,_sessionId:String):void{
+				ExternalInterface.call("OnagentLoggedOff",source,timestamp,deviceId,agentId,agentMode,srcDeviceId,_sessionId);
+			}
+			
+			public	function OnDelivered(source:String,timestamp:String,alertingDevice:String,callingDevice:String,calledDevice:String,originalContactId:String,contactId:String,callId:String,deviceId:String,connectionState:String,srcDeviceId:String,_sessionId:String):void{
+				ExternalInterface.call("OnDelivered",source,timestamp,alertingDevice,callingDevice,calledDevice,originalContactId,contactId,callId,deviceId,connectionState,srcDeviceId,_sessionId);
+			}
+			
+			public	function OnEstablished(source:String,timestamp:String,answeringDevice:String,callingDevice:String,calledDevice:String,contactId:String,callId:String,deviceId:String,connectionState:String,srcDeviceId:String,_sessionId:String):void{
+				ExternalInterface.call("OnEstablished",source,timestamp,answeringDevice,callingDevice,calledDevice,contactId,callId,deviceId,connectionState,srcDeviceId,_sessionId);
+			}
+			
+			public	function OnHold(source:String,timestamp:String,holdingDevice:String,contactId:String,callId:String,deviceId:String,connectionState:String,srcDeviceId:String,_sessionId:String):void{
+				ExternalInterface.call("OnHold",source,timestamp,holdingDevice,contactId,callId,deviceId,connectionState,srcDeviceId,_sessionId);
+			}
+			
+			public	function OnRetrieved(source:String,timestamp:String,retrievingDevice:String,contactId:String,callId:String,deviceId:String,connectionState:String,srcDeviceId:String,_sessionId:String):void{
+				ExternalInterface.call("OnRetrieved",source,timestamp,retrievingDevice,contactId,callId,deviceId,connectionState,srcDeviceId,_sessionId);
+			}
+			
+			public	function OnTransfered(source:String,timestamp:String,primaryOldCall:String,secondaryOldCall:String,transferringDevice:String,transferredToDevice:String,newCall:String,contactId:String,callId:String,deviceId:String,connectionState:String,srcDeviceId:String,_sessionId:String):void{
+				ExternalInterface.call("OnTransfered",source,timestamp,primaryOldCall,secondaryOldCall,transferringDevice,transferredToDevice,newCall,contactId,callId,deviceId,connectionState,srcDeviceId,_sessionId);
+			}
+			
+			public	function OnConferenced(source:String,timestamp:String,primaryOldCall:String,secondaryOldCall:String,conferencingDevice:String,addedParty:String,newCall:String,contactId:String,callId:String,deviceId:String,connectionState:String,srcDeviceId:String,_sessionId:String):void{
+				ExternalInterface.call("OnConferenced",source,timestamp,primaryOldCall,secondaryOldCall,conferencingDevice,addedParty,newCall,contactId,callId,deviceId,connectionState,srcDeviceId,_sessionId);
+			}
+			
+			public	function OnOrginated(source:String,timestamp:String,callingDevice:String,calledDevice:String,contactId:String,callId:String,deviceId:String,connectionState:String,srcDeviceId:String,_sessionId:String):void{
+				ExternalInterface.call("OnOrginated",source,timestamp,callingDevice,calledDevice,contactId,callId,deviceId,connectionState,srcDeviceId,_sessionId);
+			}
+			
+			public	function faillogin(reason:String):void{
+				ExternalInterface.call("faillogin",reason);
+			}
+			
+			
+			
+			
+//			public function asFunc(a:String,b:String):String {
+//				Alert.show(a +"----" +b);
+//				return sending_ti.text;
+//				
+//			}
+			
+			public function initApps():void {
+				//AddCallback方法允许javascript调用flash时间上函数 
+				tcpconn.AddClient(this);
+//				ExternalInterface.addCallback("flexFunctionAlias", asFunc);
+				ExternalInterface.addCallback("initSession", initApp);
+				ExternalInterface.addCallback("initCTI", initCTI);
+				ExternalInterface.addCallback("monitorDevice", monitorDevice);
+				ExternalInterface.addCallback("stopMonitorDevice", stopMonitorDevice);
+				ExternalInterface.addCallback("setAgentState", setAgentState);
+				ExternalInterface.addCallback("makecall", makecall);
+				ExternalInterface.addCallback("answerCall", answerCall);
+				ExternalInterface.addCallback("DisconnectCall", DisconnectCall);
+				ExternalInterface.addCallback("holdCall", holdCall);
+				ExternalInterface.addCallback("RetrieveCall", RetrieveCall);
+				ExternalInterface.addCallback("SingleStepTransferCall", SingleStepTransferCall);
+				ExternalInterface.addCallback("transferCall", transferCall);
+				ExternalInterface.addCallback("conferenceCall", conferenceCall);
+				ExternalInterface.addCallback("reconnectCall", reconnectCall);
+				ExternalInterface.addCallback("SingleStepConference", SingleStepConference);
+			}
+			
+//			public function callWrapper():void {      
+//				var f:String = "changeDocumentTitle";
+//				//ExternalInterface.call(functionName:String,Parameters)可以调用javascript函数
+//				//参数1: functionName – 你想要调用的javascript函数名要以字符串的形式
+//				//参数2: Parameters – 需要传递给javascript函数的参数，用逗号分开，是可选的。              
+//				var getJSValue:String = ExternalInterface.call(f,"New Title","old title");
+//				received_ti.text = getJSValue;
+//			}
+			
+		]]>
+	</fx:Script>
+
+	
+</s:Application>

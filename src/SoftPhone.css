@@ -1,0 +1,9 @@
+/* CSS file */
+@namespace s "library://ns.adobe.com/flex/spark";
+@namespace mx "library://ns.adobe.com/flex/mx";
+
+.SoftPhone{
+	backgroundAlpha: 1; borderStyle:none ; 
+	background-image: Embed(source='/assets/back.JPG'); 
+	background-size: "100%"; 
+}

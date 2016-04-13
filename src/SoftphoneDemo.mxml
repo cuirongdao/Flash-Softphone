@@ -1,0 +1,1724 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   width="1037" height="630" minWidth="955" minHeight="600" 
+			   fontStyle="italic" fontWeight="bold" implements="connector.ClientFunction" creationComplete="initServers()"
+			   creationPolicy="all">
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import connector.Call;
+			import connector.CallManager;
+			import connector.Logininformation;
+			import connector.TCPconnector;
+			
+			import flashx.textLayout.formats.BackgroundColor;
+			
+			import mx.containers.Panel;
+			import mx.containers.ViewStack;
+			import mx.controls.Alert;
+			import mx.controls.Label;
+			import mx.controls.ProgressBar;
+			import mx.effects.Blur;
+			import mx.events.CloseEvent;
+			import mx.events.MenuEvent;
+			import mx.managers.PopUpManager;
+			
+			private var vs:ViewStack; 
+			
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			
+			
+			var tcpconn:TCPconnector = new TCPconnector();
+			var callmanager:CallManager = new CallManager();
+			
+			var deviceId:String = "";
+			var AgentNo:String = "";
+			var AgentPassword:String = "";
+			
+			private var Timerinit:Timer = new Timer(5000,1);
+			
+			private var timerc:Timer = new Timer(1000,0);
+			private var timerd:Timer = new Timer(1000,0);
+			private var timere:Timer = new Timer(1000,0);
+			
+			var hour1:int = 0;
+			var min1:int = 0;
+			var sec1:int = 0;
+			var hour2:int = 0;
+			var min2:int = 0;
+			var sec2:int = 0;
+			var hour3:int = 0;
+			var min3:int = 0;
+			var sec3:int = 0;
+			
+			public function call1time(event:TimerEvent):void{
+				
+				var hour:String = "00";
+				var min:String = "00";
+				var sec:String = "00";
+				if(sec1<10){
+					sec = "0" + sec1;
+					sec1 ++;
+				}else if(10<=sec1&&sec1<60){
+					sec = sec1.toString();
+					sec1 ++;
+				}else{
+					sec = "00";
+					sec1 = 1;
+					min1 ++;
+				}
+				
+				if(min1<10){
+					min = "0"+min1;
+				}else if(10<=min1&&min1<60){
+					min = min1.toString();
+				}else{
+					min = "";
+					min1 = 1;
+					hour1++;
+				}
+				
+				hour = hour1.toString();
+				
+				call1calllong.text = hour+":"+ min+":"+sec;
+				
+			}
+			
+			public function call2time(event:TimerEvent):void{
+				var hour:String = "00";
+				var min:String = "00";
+				var sec:String = "00";
+				if(sec2<10){
+					sec = "0" + sec2;
+					sec2 ++;
+				}else if(10<=sec2&&sec2<60){
+					sec = sec2.toString();
+					sec2 ++;
+				}else{
+					sec = "00";
+					sec2 = 1;
+					min2 ++;
+				}
+				
+				if(min2<10){
+					min = "0"+min2;
+				}else if(10<=min2&&min2<60){
+					min = min2.toString();
+				}else{
+					min = "";
+					min2 = 1;
+					hour2++;
+				}
+				
+				hour = hour2.toString();
+				
+				call2calllong.text = hour+":"+ min+":"+sec;
+			}
+			
+			public function call3time(event:TimerEvent):void{
+				var hour:String = "00";
+				var min:String = "00";
+				var sec:String = "00";
+				if(sec3<10){
+					sec = "0" + sec3;
+					sec3 ++;
+				}else if(10<=sec3&&sec3<60){
+					sec = sec3.toString();
+					sec3 ++;
+				}else{
+					sec = "00";
+					sec3 = 1;
+					min3 ++;
+				}
+				
+				if(min3<10){
+					min = "0"+min3;
+				}else if(10<=min3&&min3<60){
+					min = min3.toString();
+				}else{
+					min = "";
+					min3 = 1;
+					hour3++;
+				}
+				
+				hour = hour3.toString();
+				
+				call3calllong.text = hour+":"+ min+":"+sec;
+			}
+			
+			
+			
+			var login:Logininformation ;
+			
+			
+			public function setlogin(Lgi:Logininformation){
+				login = Lgi;
+			}
+			
+			public function initServers():void{
+				
+				
+				
+				
+				
+				keyN.visible=false;
+				
+				//var remoteAdress:String = "http://"+login.getServerAdress().toString()+"/flexBlazeds/messagebroker/amf";
+				
+				//remoteSay.endpoint = remoteAdress;
+				//	Alert.show(remoteSay.endpoint);
+				
+				readconfig();
+				
+				tcpconn.AddClient(this);
+				
+				init4();
+				
+				initc();
+				
+				initd();
+				
+				initt();
+				
+				initf();
+				
+				init();
+				
+				
+				
+			}
+			
+			public function initpage():void{
+				vs = this.parent as ViewStack; 
+			}
+			
+			private var agetnsatatdataPop:Array=[ {label:"登陆"}, {label:"就绪"},{label:"退出"}, {label:"离席" , children:[{label:"话后处理"},{label:"开会"},{label:"培训"},{label:"小休"},{label:"午餐"}]} ];
+			
+			private var ButtondataPop:Array=[   {label:"转接"}, {label:"单步转接"} , {label:"会议"} , {label:"单步会议"} ];
+			
+			protected function pop_itemClickHandler(event:MenuEvent):void{ 
+				//				Alert.show(event.item["label"]); 
+				//				createPopUp();
+				if(event.item["label"]=="登陆"){
+					loginwindow.visible=true;
+					//tcpconn.setAgentState("setAgentState",login.getDeviceId(),login.getAgentId(),login.getpassword(),null,"NotReady","Login","0");
+				}
+				if(event.item["label"]=="就绪"){
+					tcpconn.setAgentState("setAgentState",deviceId,AgentNo,AgentPassword,null,"Ready","SetState","0");
+					
+				}
+				if(event.item["label"]=="退出"){
+					tcpconn.setAgentState("setAgentState",deviceId,AgentNo,AgentPassword,null,"Logout","Logout","0");
+					
+				}
+				if(event.item["label"]=="话后处理"){
+					tcpconn.setAgentState("setAgentState",deviceId,AgentNo,AgentPassword,null,"NotReady","SetState","0");
+					
+				}
+				if(event.item["label"]=="开会"){
+					tcpconn.setAgentState("setAgentState",deviceId,AgentNo,AgentPassword,null,"NotReady","SetState","1");
+					
+				}
+				if(event.item["label"]=="小休"){
+					tcpconn.setAgentState("setAgentState",deviceId,AgentNo,AgentPassword,null,"NotReady","SetState","2");
+					
+				}
+				if(event.item["label"]=="午餐"){
+					tcpconn.setAgentState("setAgentState",deviceId,AgentNo,AgentPassword,null,"NotReady","SetState","3");
+					
+				}
+				if(event.item["label"]=="培训"){
+					tcpconn.setAgentState("setAgentState",deviceId,AgentNo,AgentPassword,null,"NotReady","SetState","4");
+					
+				}
+				
+			}
+			
+			protected function Controlpop_itemClickHandler(event:MenuEvent):void{ 
+				
+				if(event.item["label"]=="转接"){
+					if(callmanager.getcall1().getState()=="保持"&&callmanager.getcall2().getState()!="保持"){
+						//	Alert.show("call1");
+						tcpconn.transferCall(deviceId,callmanager.getcall1().getCallid(),callmanager.getcall2().getCallid());
+					}
+					if(callmanager.getcall2().getState()=="保持"){
+						//	Alert.show("call2");
+						tcpconn.transferCall(deviceId,callmanager.getcall2().getCallid(),callmanager.getcall3().getCallid());
+						
+					}
+				}
+				if(event.item["label"]=="单步转接"){
+					createPopUpt();
+				}
+				if(event.item["label"]=="会议"){
+					if(callmanager.getcall1().getState()=="保持"&&callmanager.getcall2().getState()!="保持"){
+						tcpconn.conferenceCall(callmanager.getcall1().getDnis(),callmanager.getcall1().getCallid(),callmanager.getcall2().getCallid());
+					}
+					if(callmanager.getcall2().getState()=="保持"){
+						tcpconn.conferenceCall(callmanager.getcall2().getDnis(),callmanager.getcall2().getCallid(),callmanager.getcall3().getCallid());
+						
+					}
+				}
+				
+				if(event.item["label"]=="单步会议"){
+					
+					createPopUpf();
+				}
+				
+				
+			}
+			
+			public function answerCall():void{
+				tcpconn.answerCall(deviceId,callmanager.getcall1().getCallid());
+			}
+			
+			public function SinglestepTransfer(transferdevice:String):void{
+				tcpconn.SingleStepTransferCall(deviceId,callmanager.getcall1().getCallid(),transferdevice,null);
+			}
+			
+			public function SingleConference(conferencedDevice:String):void{
+				tcpconn.SingleStepConference(deviceId,conferencedDevice,callmanager.getcall1().getCallid(),null);
+			}
+			
+			
+			public function makecall(dnis:String):void{
+				
+				if(CallNo.text==""){
+					Alert.show("请输入号码！");
+				}else{
+					tcpconn.makecall(deviceId,dnis,null);
+				}
+				
+			}
+			
+			public function holdcall():void{
+				
+				if(call1b.source == "assets/one1.jpg"){	
+					
+					tcpconn.holdCall(deviceId,callmanager.getcall1().getCallid());
+					
+				}else if(call1b.source == "assets/one5.jpg"){					
+					tcpconn.RetrieveCall(deviceId,callmanager.getcall1().getCallid());
+				}
+			}
+			
+			public function holdcall2():void{
+				
+				if(call2b.source == "assets/one1.jpg"){			
+					tcpconn.holdCall(deviceId,callmanager.getcall2().getCallid());
+					
+				}else if(call2b.source == "assets/one5.jpg"){					
+					tcpconn.RetrieveCall(deviceId,callmanager.getcall2().getCallid());
+				}
+			}
+			
+			public function holdcall3():void{
+				
+				if(call3b.source == "assets/one1.jpg"){			
+					tcpconn.holdCall(deviceId,callmanager.getcall3().getCallid());
+					
+				}else if(call3b.source == "assets/one5.jpg"){					
+					tcpconn.RetrieveCall(deviceId,callmanager.getcall3().getCallid());
+				}
+			}
+			
+			public function callclear1():void{
+				tcpconn.DisconnectCall(deviceId,callmanager.getcall1().getCallid());	
+			}
+			public function callclear2():void{
+				tcpconn.DisconnectCall(deviceId,callmanager.getcall2().getCallid());	
+			}
+			public function callclear3():void{
+				tcpconn.DisconnectCall(deviceId,callmanager.getcall3().getCallid());
+			}
+			
+			
+			
+			public function consultationCall(ConsultationDeviceId:String,callid:String):void{
+				tcpconn.consultationCall(deviceId,callid,ConsultationDeviceId,null);
+			}
+			
+			public function reconnectCall(KeepdeviceId:String, KeepCallId:String, NowdeviceId:String, NowCallId:String):void{
+				tcpconn.reconnectCall(KeepdeviceId,KeepCallId,NowdeviceId,NowCallId);
+			}
+			
+			
+			public function initServer(event:TimerEvent):void{
+				
+				tcpconn.initCTI();
+			}
+			
+			public function initApp(ServerAddress:String,port:int):void{
+				tcpconn.initApp(ServerAddress,port);
+			}
+			
+			public function OninitServer():void{
+				//Alert.show("...................");
+				Timerinit.addEventListener(TimerEvent.TIMER , initServer);
+				Timerinit.start();
+			}
+			
+			
+			public function OnQueryAgentState(agentid:String,result:String,agentstat:String,logindevice:String,skilllist:String,failNO:String):void{
+				
+			}
+			
+			public function OnTCPclose():void{
+				
+			}
+			
+			public function Makecall(dnis:String):void{
+				
+			}
+			
+			public function OninitApp(sessionId:String):void{
+				
+				tcpconn.monitorDevice(deviceNo.text);
+			}
+			
+			public function OnMonitorDevice(deviceID:String):void{
+				deviceIDtext.text=deviceID;
+				deviceId = deviceID;
+				tcpconn.setAgentState("setAgentState",deviceNo.text,agentNo.text,password.text,null,"NotReady","Login","0");
+			}
+			
+			public function OnstopMonitorDevice(sessionId:String,deviceId:String,Result:String,Code:String):void{
+				
+			}
+			
+			public function OnSeizedEvt(source:String,timestamp:String,initiatedDevice:String,contactId:String,callId:String,deviceId:String,connectionState:String,srcDeviceId:String,_sessionId:String):void{
+				deviceStat.source = "assets/calling.jpg";
+				deviceStatText.text = "摘机";
+				
+				var calls:Call = new Call();
+				
+				calls.setCallid(callId);
+				calls.setAni(deviceId);
+				calls.setCallType("out");
+				calls.setState("摘机");
+				
+				callmanager.addNewCall(calls);
+				
+			}
+			
+			public function OnConnectionCleared(source:String,timestamp:String,releasingDevice:String,contactId:String,callId:String,deviceId:String,connectionState:String,srcDeviceId:String,_sessionId:String):void{
+				
+				if(releasingDevice==srcDeviceId){
+					
+					if(callmanager.getcall1().getCallid()==callId){
+						BorderContainer1.setStyle("backgroundColor","#afadad"); 
+						call1a.source = null;
+						call1dnis.text = "";
+						call1b.source = null;
+						call1c.source = null;
+						call1d.source = null;
+						timerc.stop();
+						sec1=0;
+						min1=0;
+						hour1=0;
+						call1calllong.text = "";
+						if(callmanager.getcall1().getState()=="会议"){
+							BorderContainer1.setStyle("backgroundColor","#afadad"); 
+							call1a.source = null;
+							call1dnis.text = "";
+							call1b.source = null;
+							call1c.source = null;
+							call1d.source = null;
+							timerc.stop();
+							sec1=0;
+							min1=0;
+							hour1=0;
+							call1calllong.text = "";
+							BorderContainer2.setStyle("backgroundColor","#afadad"); 
+							call2a.source = null;
+							call2dnis.text = "";
+							call2b.source = null;
+							call2c.source = null;
+							call2d.source = null;
+							timerd.stop();
+							sec2=0;
+							min2=0;
+							hour2=0;
+							call2calllong.text = "";
+							BorderContainer3.setStyle("backgroundColor","#afadad"); 
+							call3a.source = null;
+							call3dnis.text = "";
+							call3b.source = null;
+							call3c.source = null;
+							call3d.source = null;
+							timere.stop();
+							sec3=0;
+							min3=0;
+							hour3=0;
+							call3calllong.text = "";
+						}
+					}
+					if(callmanager.getcall2().getCallid()==callId){
+						BorderContainer2.setStyle("backgroundColor","#afadad"); 
+						call2a.source = null;
+						call2dnis.text = "";
+						call2b.source = null;
+						call2c.source = null;
+						call2d.source = null;
+						timerd.stop();
+						sec2=0;
+						min2=0;
+						hour2=0;
+						call2calllong.text = "";
+						if(callmanager.getcall2().getState()=="会议"){
+							BorderContainer1.setStyle("backgroundColor","#afadad"); 
+							call1a.source = null;
+							call1dnis.text = "";
+							call1b.source = null;
+							call1c.source = null;
+							call1d.source = null;
+							timerc.stop();
+							sec1=0;
+							min1=0;
+							hour1=0;
+							call1calllong.text = "";
+							BorderContainer2.setStyle("backgroundColor","#afadad"); 
+							call2a.source = null;
+							call2dnis.text = "";
+							call2b.source = null;
+							call2c.source = null;
+							call2d.source = null;
+							timerd.stop();
+							sec2=0;
+							min2=0;
+							hour2=0;
+							call2calllong.text = "";
+							BorderContainer3.setStyle("backgroundColor","#afadad"); 
+							call3a.source = null;
+							call3dnis.text = "";
+							call3b.source = null;
+							call3c.source = null;
+							call3d.source = null;
+							timere.stop();
+							sec3=0;
+							min3=0;
+							hour3=0;
+							call3calllong.text = "";
+						}
+						if(callmanager.getcall1().getState()=="保持"){
+							reconnectCall(srcDeviceId,callmanager.getcall1().getCallid(),srcDeviceId,callmanager.getcall2().getCallid());
+						}
+					}
+					
+					if(callmanager.getcall3().getCallid()==callId){
+						BorderContainer3.setStyle("backgroundColor","#afadad"); 
+						call3a.source = null;
+						call3dnis.text = "";
+						call3b.source = null;
+						call3c.source = null;
+						call3d.source = null;
+						timere.stop();
+						sec3=0;
+						min3=0;
+						hour3=0;
+						call3calllong.text = "";
+						if(callmanager.getcall3().getState()=="会议"){
+							BorderContainer1.setStyle("backgroundColor","#afadad"); 
+							call1a.source = null;
+							call1dnis.text = "";
+							call1b.source = null;
+							call1c.source = null;
+							call1d.source = null;
+							timerc.stop();
+							sec1=0;
+							min1=0;
+							hour1=0;
+							call1calllong.text = "";
+							BorderContainer2.setStyle("backgroundColor","#afadad"); 
+							call2a.source = null;
+							call2dnis.text = "";
+							call2b.source = null;
+							call2c.source = null;
+							call2d.source = null;
+							timerd.stop();
+							sec2=0;
+							min2=0;
+							hour2=0;
+							call2calllong.text = "";
+							BorderContainer3.setStyle("backgroundColor","#afadad"); 
+							call3a.source = null;
+							call3dnis.text = "";
+							call3b.source = null;
+							call3c.source = null;
+							call3d.source = null;
+							timere.stop();
+							sec3=0;
+							min3=0;
+							hour3=0;
+							call3calllong.text = "";
+						}
+						if(callmanager.getcall2().getState()=="保持"){
+							reconnectCall(srcDeviceId,callmanager.getcall2().getCallid(),srcDeviceId,callmanager.getcall3().getCallid());
+						}
+					}
+					
+					deviceStat.source = "assets/kongxian.jpg";
+					deviceStatText.text = "挂断"; 
+					DnisNo.text = "";
+					
+					var calls:Call = new Call();
+					calls.setAni(deviceId);
+					
+					calls.setCallid(callId);
+					calls.setState("电话挂断");
+					callmanager.addNewCall(calls);
+					
+				}
+				
+				if(releasingDevice==call1dnis.text){
+					BorderContainer1.setStyle("backgroundColor","#afadad"); 
+					call1a.source = null;
+					call1dnis.text = "";
+					call1b.source = null;
+					call1c.source = null;
+					call1d.source = null;
+					timerc.stop();
+					sec1=0;
+					min1=0;
+					hour1=0;
+					call1calllong.text = "";
+				}
+				if(releasingDevice==call2dnis.text){
+					BorderContainer2.setStyle("backgroundColor","#afadad"); 
+					call2a.source = null;
+					call2dnis.text = "";
+					call2b.source = null;
+					call2c.source = null;
+					call2d.source = null;
+					timerd.stop();
+					sec2=0;
+					min2=0;
+					hour2=0;
+					call2calllong.text = "";
+				}
+				if(releasingDevice==call3dnis.text){
+					BorderContainer3.setStyle("backgroundColor","#afadad"); 
+					call3a.source = null;
+					call3dnis.text = "";
+					call3b.source = null;
+					call3c.source = null;
+					call3d.source = null;
+					timere.stop();
+					sec3=0;
+					min3=0;
+					hour3=0;
+					call3calllong.text = "";
+				}
+				
+			}
+			
+			
+			public function OnagentNotReady(source:String,timestamp:String,reason:String,deviceId:String,agentId:String,agentMode:String,srcDeviceId:String,_sessionId:String):void{
+				AgentStat.text = "离席";
+			}
+			
+			public function OnagentLoggedOn(source:String,timestamp:String,groupId:String,deviceId:String,agentId:String,agentMode:String,srcDeviceId:String,_sessionId:String):void{
+				AgentId.text = agentId;
+				AgentStat.text = "登陆";
+			}
+			
+			public 	function OnagentReady(source:String,timestamp:String,deviceId:String,agentId:String,agentMode:String,srcDeviceId:String,_sessionId:String):void{
+				AgentStat.text = "就绪";
+			}
+			
+			public 	function OnagentLoggedOff(source:String,timestamp:String,deviceId:String,agentId:String,agentMode:String,srcDeviceId:String,_sessionId:String):void{
+				AgentStat.text = "退出";
+			}
+			
+			
+			
+			
+			public function OnDelivered(source:String,timestamp:String,alertingDevice:String,callingDevice:String,calledDevice:String,originalContactId:String,contactId:String,callId:String,deviceId:String,connectionState:String,srcDeviceId:String,_sessionId:String):void{
+				deviceStat.source = "assets/zhenling.jpg";
+				deviceStatText.text = "振铃";
+				
+				var calls:Call = new Call();
+				
+				if(alertingDevice==srcDeviceId){
+					calls.setAni(callingDevice);
+					calls.setDnis(alertingDevice);
+					calls.setCallType("in");
+					calls.setCallid(callId);
+					calls.setState("振铃");
+					callmanager.addNewCall(calls);
+					
+				}else{
+					DnisNo.text = callingDevice;
+					calls.setAni(alertingDevice);
+					calls.setDnis(callingDevice);
+					calls.setCallType("out");
+					calls.setCallid(callId);
+					calls.setState("振铃");
+					callmanager.addNewCall(calls);
+					DnisNo.text = alertingDevice;
+				}
+				
+				
+				
+			}
+			
+			public function OnEstablished(source:String,timestamp:String,answeringDevice:String,callingDevice:String,calledDevice:String,contactId:String,callId:String,deviceId:String,connectionState:String,srcDeviceId:String,_sessionId:String):void{
+				deviceStat.source = "assets/calling.jpg";
+				deviceStatText.text = "电话接通";
+				
+				
+				
+				
+				if(callmanager.getcall1().getCallid()==callId){
+					
+					if(answeringDevice==callmanager.getcall1().getAni()||answeringDevice==callmanager.getcall1().getDnis()){
+						
+						if(callmanager.getcall1().getCallType()=="in"){
+							call1dnis.text = callingDevice;
+							DnisNo.text = callingDevice;
+						}
+						if(callmanager.getcall1().getCallType()=="out"){
+							call1dnis.text = calledDevice;
+							DnisNo.text = calledDevice;
+						}
+						BorderContainer1.setStyle("backgroundColor","#FDFCFC"); 
+						call1a.source = "assets/one4.jpg";	
+						call1b.source = "assets/one1.jpg";
+						call1c.source = "assets/one2.jpg";
+						call1d.source = "assets/one3.jpg";					
+						//					var calls:Call = new Call();
+						//					calls.setAni(callmanager.getcall1().getAni());
+						//					calls.setDnis(callmanager.getcall1().getDnis());
+						//					calls.setCallid(callId);
+						//					calls.setState("通话");
+						//					calls.setCallType(callmanager.getcall1().getCallType());
+						//					callmanager.addNewCall(calls);					
+						timerc.addEventListener(TimerEvent.TIMER , call1time);
+						timerc.start();
+					}
+				}
+				
+				
+				if(callmanager.getcall2().getCallid()==callId){
+					
+					if(answeringDevice==callmanager.getcall2().getAni()||answeringDevice==callmanager.getcall2().getDnis()){
+						
+						if(callmanager.getcall2().getCallType()=="in"){
+							call2dnis.text = callingDevice;
+							DnisNo.text = callingDevice;
+						}
+						if(callmanager.getcall2().getCallType()=="out"){
+							call2dnis.text = calledDevice;
+							DnisNo.text = calledDevice;
+						}
+						
+						BorderContainer2.setStyle("backgroundColor","#FDFCFC"); 
+						call2a.source = "assets/one4.jpg";
+						call2b.source = "assets/one1.jpg";
+						call2c.source = "assets/one2.jpg";
+						call2d.source = "assets/one3.jpg";
+						//					var calls:Call = new Call();
+						//					calls.setAni(callmanager.getcall2().getAni());
+						//					calls.setDnis(callmanager.getcall2().getDnis());
+						//					calls.setCallid(callId);
+						//					calls.setState("通话");
+						//					calls.setCallType(callmanager.getcall2().getCallType());
+						//					callmanager.addNewCall(calls);
+						
+						timerd.addEventListener(TimerEvent.TIMER , call2time);
+						timerd.start();
+					}
+				}
+				
+				if(callmanager.getcall3().getCallid()==callId){
+					if(answeringDevice==callmanager.getcall3().getAni()||answeringDevice==callmanager.getcall3().getDnis()){
+						if(callmanager.getcall3().getCallType()=="in"){
+							call3dnis.text = callingDevice;
+							DnisNo.text = callingDevice;
+						}
+						if(callmanager.getcall3().getCallType()=="out"){
+							call3dnis.text = calledDevice;
+							DnisNo.text = calledDevice;
+						}
+						BorderContainer3.setStyle("backgroundColor","#FDFCFC"); 
+						call3a.source = "assets/one4.jpg";
+						call3b.source = "assets/one1.jpg";
+						call3c.source = "assets/one2.jpg";
+						call3d.source = "assets/one3.jpg";
+						//					var calls:Call = new Call();
+						//					calls.setAni(callmanager.getcall3().getAni());
+						//					calls.setDnis(callmanager.getcall3().getDnis());
+						//					calls.setCallid(callId);
+						//					calls.setState("通话");
+						//					calls.setCallType(callmanager.getcall3().getCallType());
+						//					callmanager.addNewCall(calls);				
+						timere.addEventListener(TimerEvent.TIMER , call3time);
+						timere.start();
+					}
+				}
+				
+				//				var calls:Call = new Call();
+				//				calls.setAni(callingDevice);
+				//				calls.setDnis(answeringDevice);
+				//				calls.setCallid(callId);
+				//				calls.setState("接通");
+				//				callmanager.addNewCall(calls);
+				
+				
+			}
+			
+			
+			public function OnHold(source:String,timestamp:String,holdingDevice:String,contactId:String,callId:String,deviceId:String,connectionState:String,srcDeviceId:String,_sessionId:String):void{
+				
+				deviceStatText.text = "保持";
+				
+				if(callmanager.getcall1().getCallid()==callId){
+					BorderContainer1.setStyle("backgroundColor","#cccccc"); 
+					call1a.source = "assets/one6.jpg";
+					//call1dnis.text = callmanager.getcall1().getDnis();
+					call1b.source = "assets/one5.jpg";
+					call1c.source = "assets/reconnect.jpg";
+					call1d.source = null;
+					var calls:Call = new Call();
+					calls.setAni(callmanager.getcall1().getAni());
+					calls.setDnis(callmanager.getcall1().getDnis());
+					calls.setCallid(callId);
+					calls.setState("保持");
+					calls.setCallType(callmanager.getcall1().getCallType());
+					callmanager.addNewCall(calls);
+					
+				}
+				if(callmanager.getcall2().getCallid()==callId){
+					BorderContainer2.setStyle("backgroundColor","#cccccc"); 
+					call2a.source = "assets/one6.jpg";
+					//call2dnis.text = callmanager.getcall2().getDnis();
+					call2b.source = "assets/one5.jpg";
+					call2c.source = "assets/reconnect.jpg";
+					call2d.source = null;
+					var calls:Call = new Call();
+					calls.setAni(callmanager.getcall2().getAni());
+					calls.setDnis(callmanager.getcall2().getDnis());
+					calls.setCallid(callId);
+					calls.setState("保持");
+					calls.setCallType(callmanager.getcall2().getCallType());
+					callmanager.addNewCall(calls);
+					
+				}
+				if(callmanager.getcall3().getCallid()==callId){
+					BorderContainer3.setStyle("backgroundColor","#cccccc"); 
+					call3a.source = "assets/one4.jpg";
+					//call3dnis.text = callmanager.getcall3().getDnis();
+					call3b.source = "assets/one6.jpg";
+					call3c.source = "assets/reconnect.jpg";
+					call3d.source = null;
+					var calls:Call = new Call();
+					calls.setAni(callmanager.getcall3().getAni());
+					calls.setDnis(callmanager.getcall3().getDnis());
+					calls.setCallid(callId);
+					calls.setState("保持");
+					calls.setCallType(callmanager.getcall3().getCallType());
+					callmanager.addNewCall(calls);
+				}
+				
+				
+			}
+			
+			public function OnRetrieved(source:String,timestamp:String,retrievingDevice:String,contactId:String,callId:String,deviceId:String,connectionState:String,srcDeviceId:String,_sessionId:String):void{
+				
+				deviceStatText.text = "取消保持";
+				
+				if(callmanager.getcall1().getCallid()==callId){
+					BorderContainer1.setStyle("backgroundColor","#FDFCFC"); 
+					call1a.source = "assets/one4.jpg";
+					//call1dnis.text = retrievingDevice;
+					call1b.source = "assets/one1.jpg";
+					call1c.source = "assets/one2.jpg";
+					call1d.source = "assets/one3.jpg";
+					var calls:Call = new Call();
+					calls.setAni(callmanager.getcall1().getAni());
+					calls.setDnis(callmanager.getcall1().getDnis());
+					calls.setCallid(callId);
+					calls.setState("取消保持");
+					calls.setCallType(callmanager.getcall1().getCallType());
+					callmanager.addNewCall(calls);
+					
+				}
+				if(callmanager.getcall2().getCallid()==callId){
+					BorderContainer2.setStyle("backgroundColor","#FDFCFC"); 
+					call2a.source = "assets/one4.jpg";
+					//call2dnis.text = retrievingDevice;
+					call2b.source = "assets/one1.jpg";
+					call2c.source = "assets/one2.jpg";
+					call2d.source = "assets/one3.jpg";
+					var calls:Call = new Call();
+					calls.setAni(callmanager.getcall2().getAni());
+					calls.setDnis(callmanager.getcall2().getDnis());
+					calls.setCallid(callId);
+					calls.setState("取消保持");
+					calls.setCallType(callmanager.getcall2().getCallType());
+					callmanager.addNewCall(calls);
+				}
+				if(callmanager.getcall3().getCallid()==callId){
+					BorderContainer3.setStyle("backgroundColor","#FDFCFC"); 
+					call3a.source = "assets/one4.jpg";
+					//call3dnis.text = retrievingDevice;
+					call3b.source = "assets/one1.jpg";
+					call3c.source = "assets/one2.jpg";
+					call3d.source = "assets/one3.jpg";
+					var calls:Call = new Call();
+					calls.setAni(callmanager.getcall3().getAni());
+					calls.setDnis(callmanager.getcall3().getDnis());
+					calls.setCallid(callId);
+					calls.setState("取消保持");
+					calls.setCallType(callmanager.getcall3().getCallType());
+					callmanager.addNewCall(calls);
+				}
+			}
+			
+			public function OnTransfered(source:String,timestamp:String,primaryOldCall:String,secondaryOldCall:String,transferringDevice:String,transferredToDevice:String,newCall:String,contactId:String,callId:String,deviceId:String,connectionState:String,srcDeviceId:String,_sessionId:String):void{
+				deviceStatText.text = "已转接";
+				if(srcDeviceId==transferringDevice){
+					if(callmanager.getcall1().getCallid()==primaryOldCall||callmanager.getcall1().getCallid()==secondaryOldCall){
+						var calls:Call = new Call();
+						calls.setCallid(callmanager.getcall1().getCallid());
+						calls.setState("已转接");
+						callmanager.addNewCall(calls);
+						BorderContainer1.setStyle("backgroundColor","#afadad"); 
+						call1a.source = null;
+						call1dnis.text = "";
+						call1b.source = null;
+						call1c.source = null;
+						call1d.source = null;
+						timerc.stop();
+						sec1=0;
+						min1=0;
+						hour1=0;
+						call1calllong.text = "";
+					}
+					if(callmanager.getcall2().getCallid()==primaryOldCall||callmanager.getcall2().getCallid()==secondaryOldCall){
+						var calls:Call = new Call();
+						calls.setCallid(callmanager.getcall2().getCallid());
+						calls.setState("已转接");
+						callmanager.addNewCall(calls);
+						BorderContainer2.setStyle("backgroundColor","#afadad"); 
+						call2a.source = null;
+						call2dnis.text = "";
+						call2b.source = null;
+						call2c.source = null;
+						call2d.source = null;
+						timerd.stop();
+						sec2=0;
+						min2=0;
+						hour2=0;
+						call2calllong.text = "";
+					}
+					if(callmanager.getcall3().getCallid()==primaryOldCall||callmanager.getcall3().getCallid()==secondaryOldCall){
+						var calls:Call = new Call();
+						calls.setCallid(callmanager.getcall3().getCallid());
+						calls.setState("已转接");
+						callmanager.addNewCall(calls);
+						BorderContainer3.setStyle("backgroundColor","#afadad"); 
+						call3a.source = null;
+						call3dnis.text = "";
+						call3b.source = null;
+						call3c.source = null;
+						call3d.source = null;
+						timere.stop();
+						sec3=0;
+						min3=0;
+						hour3=0;
+						call3calllong.text = "";
+					}
+					
+				}else if(srcDeviceId==transferredToDevice){
+					
+				}else{
+					var calls:Call = new Call();
+					calls.setCallid(primaryOldCall);
+					calls.setState("已转接");
+					callmanager.addNewCall(calls);
+					var calls:Call = new Call();
+					calls.setCallid(secondaryOldCall);
+					callmanager.addNewCall(calls);
+				}
+				
+				deviceStat.source = "assets/kongxian.jpg";
+			}
+			
+			var conferenceCallId:String = "";
+			
+			public 	function OnConferenced(source:String,timestamp:String,primaryOldCall:String,secondaryOldCall:String,conferencingDevice:String,addedParty:String,newCall:String,contactId:String,callId:String,deviceId:String,connectionState:String,srcDeviceId:String,_sessionId:String):void{	
+				conferenceCallId = callId;
+				deviceStatText.text = "会议";
+				if(callmanager.getcall1().getCallid()==primaryOldCall||callmanager.getcall1().getCallid()==secondaryOldCall){
+					BorderContainer1.setStyle("backgroundColor","#FDFCFC"); 
+					call1a.source = "assets/conference.jpg";
+					//call1dnis.text = retrievingDevice;
+					call1b.source = "assets/one1.jpg";
+					call1c.source = "assets/one2.jpg";
+					call1d.source = "assets/one3.jpg";
+					var calls:Call = new Call();
+					calls.setAni(callmanager.getcall1().getAni());
+					calls.setDnis(callmanager.getcall1().getDnis());
+					calls.setCallid(callId);
+					calls.setState("会议");
+					calls.setCallType(callmanager.getcall1().getCallType());
+					callmanager.addNewCall(calls);
+					var callsC:Call = new Call();
+					callsC.setCallid(primaryOldCall);
+					callsC.setState("电话挂断");
+					callmanager.addNewCall(callsC);
+				}
+				if(callmanager.getcall2().getCallid()==primaryOldCall||callmanager.getcall2().getCallid()==secondaryOldCall){
+					BorderContainer2.setStyle("backgroundColor","#FDFCFC"); 
+					call2a.source = "assets/conference.jpg";
+					//call1dnis.text = retrievingDevice;
+					call2b.source = "assets/one1.jpg";
+					call2c.source = "assets/one2.jpg";
+					call2d.source = "assets/one3.jpg";
+					var calls:Call = new Call();
+					calls.setAni(callmanager.getcall2().getAni());
+					calls.setDnis(callmanager.getcall2().getDnis());
+					calls.setCallid(callId);
+					calls.setState("会议");
+					calls.setCallType(callmanager.getcall2().getCallType());
+					callmanager.addNewCall(calls);
+					var callsC:Call = new Call();
+					callsC.setCallid(primaryOldCall);
+					callsC.setState("电话挂断");
+					callmanager.addNewCall(callsC);
+				}
+				if(callmanager.getcall3().getCallid()==primaryOldCall||callmanager.getcall3().getCallid()==secondaryOldCall){
+					BorderContainer2.setStyle("backgroundColor","#FDFCFC"); 
+					call2a.source = "assets/conference.jpg";
+					//call1dnis.text = retrievingDevice;
+					call2b.source = "assets/one1.jpg";
+					call2c.source = "assets/one2.jpg";
+					call2d.source = "assets/one3.jpg";
+					var calls:Call = new Call();
+					calls.setAni(callmanager.getcall3().getAni());
+					calls.setDnis(callmanager.getcall3().getDnis());
+					calls.setCallid(callId);
+					calls.setState("会议");
+					calls.setCallType(callmanager.getcall3().getCallType());
+					callmanager.addNewCall(calls);
+					var callsC:Call = new Call();
+					callsC.setCallid(primaryOldCall);
+					callsC.setState("电话挂断");
+					callmanager.addNewCall(callsC);
+				}
+				
+			}
+			
+			public function OnOrginated(source:String,timestamp:String,callingDevice:String,calledDevice:String,contactId:String,callId:String,deviceId:String,connectionState:String,srcDeviceId:String,_sessionId:String):void{
+				deviceStatText.text = "外拨";
+				DnisNo.text = calledDevice;
+				var calls:Call = new Call();
+				calls.setAni(callingDevice);
+				calls.setDnis(calledDevice);
+				calls.setCallType("out");
+				calls.setCallid(callId);
+				calls.setState("外拨");
+				callmanager.addNewCall(calls);
+			}
+			
+			public function faillogin(reason:String):void{
+				
+			}
+			
+			
+			
+			
+			
+			public function alertimage1():void{
+				
+				toMakecall.source = "assets/one7.jpg" ;
+			}
+			public function alertimage1b():void{
+				
+				toMakecall.source = "assets/one7b.jpg" ;
+			}
+			
+			public function alertimage2():void{
+				
+				keyp.source = "assets/keys1.jpg" ;
+			}
+			public function alertimage2b():void{
+				
+				keyp.source = "assets/keys.jpg" ;
+			}
+			
+			public function alertimage3():void{
+				
+				answerc.source = "assets/jie.jpg" ;
+			}
+			public function alertimage3b():void{
+				
+				answerc.source = "assets/jie1.jpg" ;
+			}
+			
+			public function alertimage4():void{
+				
+				tbook.source = "assets/tbook.jpg" ;
+			}
+			public function alertimage4b():void{
+				
+				tbook.source = "assets/tbook1.jpg" ;
+			}
+			
+			public function alertimage5():void{
+				
+				callrecord.source = "assets/callrecord.jpg" ;
+			}
+			public function alertimage5b():void{
+				
+				callrecord.source = "assets/callrecord1.jpg" ;
+			}
+			
+			
+			
+			public function notebook():void{
+				
+			}
+			
+			
+			
+			public function initProgressBar():void{
+				
+				PopUpManager.addPopUp(panel4, this, true);  
+				PopUpManager.centerPopUp(panel4);
+				
+				timers.addEventListener(TimerEvent.TIMER,starttime);
+				timers.start();
+			}
+			
+			public function starttime(evt:TimerEvent):void{
+				valueNum = valueNum + 10;
+				var vaPercent:Number = valueNum / 100;
+				if(valueNum >= 2900)
+				{
+					proBar.setProgress(valueNum, 2900);
+					proBar.label = "连接完成";
+					valueNum = 0;
+					proBar.visible = false;
+					timers.stop();
+					PopUpManager.removePopUp(panel4);  
+					return;
+				}
+				proBar.setProgress(valueNum, 2900);
+				proBar.label = "正在连接" + vaPercent + "%";   
+			}
+			
+			private var proBar:ProgressBar;
+			private var panel4:mx.containers.Panel;
+			private var timers:Timer = new Timer(1);
+			var valueNum:Number = 0;
+			
+			private function init4():void {  
+				
+				proBar = new ProgressBar();
+				
+				proBar.width = 200;
+				proBar.x = 94.5;
+				proBar.y = 81;
+				proBar.minimum = 0;
+				proBar.maximum = 100;
+				proBar.direction = "right";
+				proBar.mode = "manual";
+				
+				panel4 = new mx.containers.Panel();
+				panel4.creationPolicy = "all";
+				
+				panel4.addChild(proBar);
+				
+				panel4.title = "正在与服务器连接"; 
+				
+				panel4.width = 300;  
+				panel4.height = 200;  
+				
+			}
+			
+			
+			
+			
+			
+			private var panel:mx.containers.Panel;  
+			public var labels:mx.controls.Label = new mx.controls.Label();
+			public var okButton:mx.controls.Button = new mx.controls.Button();  
+			public var exitButton:mx.controls.Button = new mx.controls.Button();  
+			public var textinput:mx.controls.TextInput = new mx.controls.TextInput();
+			public var value:String; 
+			
+			private function init():void {  
+				
+				labels.text="请输入要磋商的号码 :";  
+				okButton.label="确定";  
+				okButton.addEventListener(MouseEvent.CLICK, selectComboValueFun);  
+				
+				
+				exitButton.label="退出";  
+				exitButton.addEventListener(MouseEvent.CLICK, closePopUp);  
+				
+				panel = new mx.containers.Panel();  
+				panel.title = "磋商/咨询";  
+				
+				panel.addChild(labels);  
+				
+				panel.addChild(textinput);  
+				panel.addChild(okButton);  
+				panel.addChild(exitButton);
+				
+				panel.width = 300;  
+				panel.height = 200;  
+				
+			}
+			
+			public function closePopUp(evt:MouseEvent):void {  
+				
+				if(panel != null){  
+					PopUpManager.removePopUp(panel);  
+					
+				}
+			}  
+			
+			public function selectComboValueFun(evt:MouseEvent):void {  
+				// value=combo.selectedItem.toString();  
+				value = textinput.text.toString();
+				if(value==""){
+					Alert.show("请输入号码！");
+				}else{
+					if(panel != null)  {
+						consultationCall(value,callmanager.getcall1().getCallid());
+						PopUpManager.removePopUp(panel);  
+					}
+				}
+				
+				
+			}         
+			
+			public function createPopUp():void{  
+				if(call1c.source == "assets/reconnect.jpg"){
+					reconnectCall(deviceId,callmanager.getcall1().getCallid(),deviceId,callmanager.getcall2().getCallid());
+				}else{
+					
+					PopUpManager.addPopUp(panel, this, true);  
+					PopUpManager.centerPopUp(panel);   //在正前方显示  
+					//  PopUpManager.centerPopUp(panel);  
+				}
+			} 
+			
+			
+			private var panelc:mx.containers.Panel;  
+			public var labelsc:mx.controls.Label = new mx.controls.Label();
+			public var okButtonc:mx.controls.Button = new mx.controls.Button();  
+			public var exitButtonc:mx.controls.Button = new mx.controls.Button();  
+			public var textinputc:mx.controls.TextInput = new mx.controls.TextInput();
+			public var valuec:String; 
+			
+			private function initc():void {  
+				
+				labelsc.text="请输入要磋商的号码 :";  
+				okButtonc.label="确定";  
+				okButtonc.addEventListener(MouseEvent.CLICK, selectComboValueFunc);  
+				
+				
+				exitButtonc.label="退出";  
+				exitButtonc.addEventListener(MouseEvent.CLICK, closePopUpc);  
+				
+				panelc = new mx.containers.Panel();  
+				panelc.title = "磋商/咨询";  
+				
+				panelc.addChild(labelsc);  
+				
+				panelc.addChild(textinputc);  
+				panelc.addChild(okButtonc);  
+				panelc.addChild(exitButtonc);
+				
+				panelc.width = 300;  
+				panelc.height = 200;  
+				
+			}
+			
+			public function closePopUpc(evt:MouseEvent):void {  
+				
+				if(panelc != null){  
+					PopUpManager.removePopUp(panelc);  
+					
+				}
+			}  
+			
+			public function selectComboValueFunc(evt:MouseEvent):void {  
+				// value=combo.selectedItem.toString();  
+				valuec = textinputc.text.toString();
+				if(valuec==""){
+					Alert.show("请输入号码！");
+				}else{
+					if(panelc != null)  {
+						consultationCall(valuec,callmanager.getcall2().getCallid());
+						PopUpManager.removePopUp(panelc);  
+					}
+				}
+				
+				
+			}         
+			
+			public function createPopUpc():void{ 
+				if(call2c.source == "assets/reconnect.jpg"){
+					reconnectCall(deviceId,callmanager.getcall2().getCallid(),deviceId,callmanager.getcall3().getCallid());
+				}else{
+					PopUpManager.addPopUp(panelc, this, true);  
+					PopUpManager.centerPopUp(panelc);   //在正前方显示  
+					//  PopUpManager.centerPopUp(panel);  
+				}
+			} 
+			
+			private var paneld:mx.containers.Panel;  
+			public var labelsd:mx.controls.Label = new mx.controls.Label();
+			public var okButtond:mx.controls.Button = new mx.controls.Button();  
+			public var exitButtond:mx.controls.Button = new mx.controls.Button();  
+			public var textinputd:mx.controls.TextInput = new mx.controls.TextInput();
+			public var valued:String; 
+			
+			private function initd():void {  
+				
+				labelsd.text="请输入要磋商的号码 :";  
+				okButtond.label="确定";  
+				okButtond.addEventListener(MouseEvent.CLICK, selectComboValueFund);  
+				
+				
+				exitButtond.label="退出";  
+				exitButtond.addEventListener(MouseEvent.CLICK, closePopUpd);  
+				
+				paneld = new mx.containers.Panel();  
+				paneld.title = "磋商/咨询";  
+				
+				paneld.addChild(labelsd);  
+				
+				paneld.addChild(textinputd);  
+				paneld.addChild(okButtond);  
+				paneld.addChild(exitButtond);
+				
+				paneld.width = 300;  
+				paneld.height = 200;  
+				
+			}
+			
+			public function closePopUpd(evt:MouseEvent):void {  
+				
+				if(paneld != null){  
+					PopUpManager.removePopUp(paneld);  
+				}
+			}  
+			
+			public function selectComboValueFund(evt:MouseEvent):void {  
+				// value=combo.selectedItem.toString();  
+				valued = textinputd.text.toString();
+				if(valued==""){
+					Alert.show("请输入号码！");
+				}else{
+					if(paneld != null)  {
+						consultationCall(valued,callmanager.getcall3().getCallid());
+						PopUpManager.removePopUp(paneld);  
+					}
+				}
+			}         
+			
+			public function createPopUpd():void{  
+				if(call3c.source == "assets/reconnect.jpg"){
+					reconnectCall(deviceId,callmanager.getcall3().getCallid(),deviceId,callmanager.getcall1().getCallid());
+				}else{
+					PopUpManager.addPopUp(paneld, this, true);  
+					PopUpManager.centerPopUp(paneld);   //在正前方显示   
+				}
+			} 
+			
+			private var panelt:mx.containers.Panel;  
+			public var labelst:mx.controls.Label = new mx.controls.Label();
+			public var okButtont:mx.controls.Button = new mx.controls.Button();  
+			public var exitButtont:mx.controls.Button = new mx.controls.Button();  
+			public var textinputt:mx.controls.TextInput = new mx.controls.TextInput();
+			public var valuet:String; 
+			
+			private function initt():void {  
+				
+				labelst.text="请输入要磋商的号码 :";  
+				okButtont.label="确定";  
+				okButtont.addEventListener(MouseEvent.CLICK, selectComboValueFunt);  
+				
+				
+				exitButtont.label="退出";  
+				exitButtont.addEventListener(MouseEvent.CLICK, closePopUpt);  
+				
+				panelt = new mx.containers.Panel();  
+				panelt.title = "单步转接";  
+				
+				panelt.addChild(labelst);  
+				
+				panelt.addChild(textinputt);  
+				panelt.addChild(okButtont);  
+				panelt.addChild(exitButtont);
+				
+				panelt.width = 300;  
+				panelt.height = 200;  
+				
+			}
+			
+			public function closePopUpt(evt:MouseEvent):void {  
+				
+				if(panelt != null){  
+					PopUpManager.removePopUp(panelt);  
+				}
+			}  
+			
+			public function selectComboValueFunt(evt:MouseEvent):void {  
+				// value=combo.selectedItem.toString();  
+				valuet = textinputt.text.toString();
+				if(valuet==""){
+					Alert.show("请输入号码！");
+				}else{
+					if(panelt != null)  {
+						SinglestepTransfer(valuet);
+						PopUpManager.removePopUp(panelt);  
+					}
+				}
+				
+				
+			}         
+			
+			public function createPopUpt():void{  
+				PopUpManager.addPopUp(panelt, this, true);  
+				PopUpManager.centerPopUp(panelt);   //在正前方显示   
+				
+			} 
+			
+			
+			private var panelf:mx.containers.Panel;  
+			public var labelsf:mx.controls.Label = new mx.controls.Label();
+			public var okButtonf:mx.controls.Button = new mx.controls.Button();  
+			public var exitButtonf:mx.controls.Button = new mx.controls.Button();  
+			public var textinputf:mx.controls.TextInput = new mx.controls.TextInput();
+			public var valuef:String; 
+			
+			private function initf():void {  
+				
+				labelsf.text="请输入要磋商的号码 :";  
+				okButtonf.label="确定";  
+				okButtonf.addEventListener(MouseEvent.CLICK, selectComboValueFunf);  
+				
+				
+				exitButtonf.label="退出";  
+				exitButtonf.addEventListener(MouseEvent.CLICK, closePopUpf);  
+				
+				panelf = new mx.containers.Panel();  
+				panelf.title = "单步会议";  
+				
+				panelf.addChild(labelsf);  
+				
+				panelf.addChild(textinputf);  
+				panelf.addChild(okButtonf);  
+				panelf.addChild(exitButtonf);
+				
+				panelf.width = 300;  
+				panelf.height = 200;  
+				
+			}
+			
+			public function closePopUpf(evt:MouseEvent):void {  
+				
+				if(panelf != null){  
+					PopUpManager.removePopUp(panelf);  
+				}
+			}  
+			
+			public function selectComboValueFunf(evt:MouseEvent):void {  
+				// value=combo.selectedItem.toString();  
+				valuef = textinputf.text.toString();
+				if(valuef==""){
+					Alert.show("请输入号码！");
+				}else{
+					if(panelf != null)  {
+						SingleConference(valuef);
+						PopUpManager.removePopUp(panelf);  
+					}
+				}
+				
+			}         
+			
+			public function createPopUpf():void{  
+				PopUpManager.addPopUp(panelf, this, true);  
+				PopUpManager.centerPopUp(panelf);   //在正前方显示   	
+			} 
+			
+			
+			
+			public function keyBoardValue(Number:String):void{
+				CallNo.text += Number;
+			}
+			
+			public function closeTitle():void{
+				keyN.visible = false;
+			}
+			
+			public function outtitle():void{
+				keyN.visible = true;
+			}
+			
+			
+			
+			private function readconfig():void{
+				var XMLURL:URLRequest = new URLRequest("config.xml");
+				var myLoader:URLLoader = new URLLoader(XMLURL);
+				myLoader.addEventListener("complete",Loaded);
+			}
+			
+			var logpath:String="";
+			var ServerAdress:String = "";
+			
+			var CTIServer:String = "";
+			var port:String = "";
+			var ReportnumberIVR:String = "";
+			var satisfactionIVR:String = "";
+			var UUI:String = "";
+			
+			public function Loaded(event:Event):void{
+				var myLoader:URLLoader = URLLoader(event.target);
+				XML.ignoreProcessingInstructions = false;
+				var xml:XML = new XML(myLoader.data);
+				
+				//Alert.show( xml.children()[0].toString()+"---"+ xml.children()[1].toString()+"---"+ xml.children()[2].toString()+"---"+ xml.children()[3].toString()+"---"+ xml.children()[4].toString()+"---"+ xml.children()[5].toString()+"---"+ xml.children()[6].toString());
+				
+				
+				
+				
+				try
+				{
+					CTIServers.text = xml.children()[0].toString();
+					ports.text = xml.children()[1].toString();
+					
+					ReportnumberIVRs.text = xml.children()[2].toString();
+					satisfactionIVRs.text = xml.children()[3].toString();
+					UUIs.text = xml.children()[4].toString();
+					
+					CTIServer = xml.children()[0].toString();
+					port = xml.children()[1].toString();
+					
+					ReportnumberIVR = xml.children()[2].toString();
+					satisfactionIVR = xml.children()[3].toString();
+					UUI = xml.children()[4].toString();
+					logpath = xml.children()[6].toString();
+					
+				} 
+				catch(error:Error) 
+				{
+					Alert.show(error.message);
+				}
+				
+				
+				//skillNo.text = xml.children()[5].toString();
+				//login.setLogpath(xml.children()[6].toString());
+				//login.setServerAdress(xml.children()[7].toString());
+				
+			}
+			
+			public function LoginWindows():void{
+				initApp(CTIServer,Number(port));
+				initProgressBar();
+				
+				deviceId=deviceNo.text;
+				AgentNo=agentNo.text;
+				AgentPassword=password.text;
+				loginwindow.visible = false;
+			}
+			
+			public function cancerWindows():void{
+				loginwindow.visible = false;
+			}
+			
+			
+			public function remotingSayHello(deviceId:String,logMessage:String):void{    
+				
+				try
+				{
+					
+					remoteSay.writelogs(deviceId,logMessage,logpath); 
+					//Alert.show(login.getLogpath() + logMessage);
+					//Alert.show(logMessage);
+				} 
+				catch(error:Error) 
+				{
+					Alert.show("error :" + error.message);
+				}
+				
+			} 
+			
+			protected function remoteSay_resultHandler(event:ResultEvent):void
+			{
+				// TODO Auto-generated method stub
+				//Alert.show("resultEvent : --  "+event.result.a);
+				
+			}
+			
+			protected function remoteSay_faultHandler(event:FaultEvent):void
+			{
+				// TODO Auto-generated method stub
+				//Alert.show("faultEvent :" + event.fault.message);
+				
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<s:RemoteObject id="remoteSay" destination="writelog" result="remoteSay_resultHandler(event)"
+						fault="remoteSay_faultHandler(event)"
+						endpoint="http://localhost:8021/flexBlazeds/messagebroker/amf"
+						showBusyCursor="true"/>
+		
+	</fx:Declarations>
+	
+	<s:Group width="100%"
+			 height="111"> 
+		<s:Rect x="-4" y="0" width="1053" height="629"> 
+			<s:fill> 
+				<s:BitmapFill fillMode="scale"
+							  source="@Embed(source='/assets/white.jpg')"/> 
+			</s:fill> 
+		</s:Rect> 
+		<s:Panel x="0" y="0" width="729" height="132" backgroundColor="#dbd8d8" fontStyle="normal"
+				 fontWeight="bold">
+			<s:Label x="28" y="-22" width="36" height="16" fontFamily="中易黑体" fontSize="15"
+					 fontStyle="normal" fontWeight="bold" text="分机:"/>
+			<s:Label x="187" y="-22" width="63" height="16" color="#FCFAFA" fontFamily="中易黑体"
+					 fontSize="15" fontStyle="normal" fontWeight="bold" textAlign="left"
+					 verticalAlign="middle" id="AgentId"/>
+			<s:Label id="deviceIDtext" x="72" y="-22" width="63" height="16" color="#FDFAFA"
+					 fontFamily="中易黑体" fontSize="15" fontStyle="normal" fontWeight="bold"
+					 textAlign="left" verticalAlign="middle"/>
+			<s:Label x="268" y="-22" width="54" height="16" fontFamily="Verdana" fontSize="15"
+					 fontStyle="normal" fontWeight="bold" text="排队数:"/>
+			<mx:PopUpMenuButton x="638" y="-27" width="68" height="20" label="状态"
+								dataProvider="{agetnsatatdataPop}" fontFamily="中易黑体" fontSize="13"
+								fontStyle="normal" fontWeight="bold"
+								itemClick="pop_itemClickHandler(event)"/>
+			<s:TextInput x="10" y="72" width="115" height="22" color="#060606" fontSize="13"
+						 fontStyle="normal" fontWeight="bold"
+						 skinClass="graphite.skins.ComboBoxTextInputSkin" textAlign="left" id="CallNo"/>
+			<s:BorderContainer x="321" y="2" width="401" height="93" backgroundColor="#afadad">
+				<s:BorderContainer x="4" y="3" width="390" height="24" backgroundColor="#afadad" 
+								   borderVisible="false" fontStyle="normal" fontWeight="bold" id="BorderContainer1" >
+					<s:Image x="283" y="1" width="26" height="20" id="call1b" click="holdcall()"/>
+					<s:Image x="5" y="1" width="26" height="20" id="call1a"/>
+					<s:Image x="320" y="1" width="26" height="20" id="call1c" click="createPopUp()"/>
+					<s:Image x="357" y="1" width="26" height="20" id="call1d" click="callclear1()"/>
+					<s:Label id="call1dnis" x="48" y="10" width="90" color="#030303" fontSize="13"
+							 fontStyle="normal" fontWeight="bold" textAlign="center" />
+					<s:Label id="call1calllong" x="163" y="10" width="86" color="#020202" fontSize="13"
+							 fontStyle="normal" fontWeight="bold"/>
+					
+				</s:BorderContainer>
+				<s:BorderContainer x="4" y="33" width="390" height="24" backgroundColor="#afadad" borderVisible="false" id="BorderContainer2">
+					<s:Image x="5" y="1" width="26" height="20" id="call2a"/>
+					<s:Image x="283" y="1" width="26" height="20" id="call2b" click="holdcall2()"/>
+					<s:Image x="320" y="1" width="26" height="20" id="call2c" click="createPopUpc()"/>
+					<s:Image x="357" y="1" width="26" height="20" id="call2d" click="callclear2()"/>
+					<s:Label id="call2dnis" x="48" y="10" width="89" color="#030303" fontSize="13"
+							 fontStyle="normal" fontWeight="bold" textAlign="center"/>
+					<s:Label id="call2calllong" x="163" y="10" width="87" color="#020202" fontSize="13"
+							 fontStyle="normal" fontWeight="bold"/>
+					
+				</s:BorderContainer>
+				<s:BorderContainer x="4" y="63" width="390" height="24" backgroundColor="#afadad" borderVisible="false" id="BorderContainer3">
+					<s:Image x="5" y="1" width="26" height="20" id="call3a"/>
+					<s:Image x="283" y="1" width="26" height="20" id="call3b" click="holdcall3()" />
+					<s:Image x="320" y="1" width="26" height="20" id="call3c" click="createPopUpd()"/>
+					<s:Image x="357" y="1" width="26" height="20" id="call3d" click="callclear3()"/>
+					<s:Label id="call3dnis" x="48" y="10" width="89" color="#030303" fontSize="13"
+							 fontStyle="normal" fontWeight="bold" textAlign="center"/>
+					<s:Label id="call3calllong" x="163" y="10" width="87" color="#020202" fontSize="13"
+							 fontStyle="normal" fontWeight="bold"/>
+					
+				</s:BorderContainer>
+			</s:BorderContainer>
+			<s:Label x="143" y="-22" width="36" height="16" fontFamily="中易宋体" fontSize="15"
+					 fontStyle="normal" fontWeight="bold" text="工号:"/>
+			<mx:Image x="143" y="69" width="26" height="23" source="assets/one7b.jpg" id="toMakecall" mouseOver="alertimage1()" mouseOut = "alertimage1b()" mouseDown="makecall(CallNo.text)"/>
+			<s:Image x="11" y="23" width="34" height="32" source="assets/kongxian.jpg" id="deviceStat"/>
+			<mx:Image x="213" y="69" width="26" height="23" source="assets/keys.jpg" id="keyp" mouseOver="alertimage2()" mouseOut = "alertimage2b()" mouseDown="outtitle()"/>
+			<mx:Image x="178" y="69" width="26" height="23" source="assets/jie1.jpg" id="answerc" mouseOver="alertimage3()" mouseOut = "alertimage3b()" mouseDown="answerCall()" />
+			<mx:Image x="248" y="69" width="26" height="23" source="assets/tbook1.jpg" id="tbook" mouseOver="alertimage4()" mouseOut = "alertimage4b()" mouseDown="notebook()"/>
+			<mx:Image x="282" y="69" width="26" height="23" source="assets/callrecord1.jpg" id="callrecord" mouseOver="alertimage5()" mouseOut = "alertimage5b()" mouseDown="notebook()"/>
+			<mx:PopUpMenuButton x="228" y="10" width="81" label="操作" dataProvider="{ButtondataPop}"
+								fontFamily="中易宋体" fontSize="14" fontStyle="normal" fontWeight="bold"
+								itemClick="Controlpop_itemClickHandler(event)" textDecoration="none"/>
+			<s:Label x="330" y="-22" width="55" height="16" color="#FDFAFA" fontFamily="中易黑体"
+					 fontSize="15" fontStyle="normal" fontWeight="bold" textAlign="left"
+					 verticalAlign="middle"/>
+			<s:Label x="463" y="-23" width="144" height="16" color="#FDFCFC" fontFamily="中易黑体"
+					 fontSize="15" fontStyle="normal" fontWeight="bold" textAlign="right"
+					 verticalAlign="middle" id="AgentStat" text="未登录"/>
+			<s:Label id="deviceStatText" x="62" y="14" width="82" height="16" color="#030303"
+					 fontFamily="中易黑体" fontSize="15" fontStyle="normal" fontWeight="bold"
+					 textAlign="left"/>
+			<s:Label x="60" y="44" width="119" height="16" color="#030303" fontFamily="中易黑体"
+					 fontSize="15" fontStyle="normal" fontWeight="bold" textAlign="left" id="DnisNo"/>
+			
+		</s:Panel>
+		
+	</s:Group> 
+	<s:TitleWindow x="217" y="129" width="190" height="170" close="closeTitle()" id="keyN" visible="false">
+		<s:Button x="10" y="10" width="40" label="1" click="keyBoardValue('1')"/>
+		<s:Button x="10" y="42" width="40" label="4" click="keyBoardValue('4')"/>
+		<s:Button x="74" y="10" width="40" label="2" click="keyBoardValue('2')"/>
+		<s:Button x="138" y="10" width="40" label="3" click="keyBoardValue('3')"/>
+		<s:Button x="74" y="42" width="40" label="5" click="keyBoardValue('5')"/>
+		<s:Button x="10" y="74" width="40" label="7" click="keyBoardValue('7')"/>
+		<s:Button x="138" y="42" width="40" label="6" click="keyBoardValue('6')"/>
+		<s:Button x="139" y="106" width="40" label="#" click="keyBoardValue('#')"/>
+		<s:Button x="74" y="106" width="40" label="0" click="keyBoardValue('0')"/>
+		<s:Button x="138" y="74" width="40" label="9" click="keyBoardValue('9')"/>
+		<s:Button x="74" y="74" width="40" label="8" click="keyBoardValue('8')"/>
+		<s:Button x="10" y="106" width="40" label="*" click="keyBoardValue('*')"/>
+	</s:TitleWindow>
+	<mx:TabNavigator x="735" y="2" width="248" height="174" id="loginwindow" visible="false">
+		<mx:Canvas width="100%" height="100%" label="登陆" fontSize="17" fontStyle="normal"
+				   fontWeight="normal">
+			<s:Label x="26" y="16" color="#FFFBFB" fontFamily="中易黑体" fontSize="15"
+					 fontWeight="normal" text="工号"/>
+			<s:TextInput x="90" y="46" width="130" text="000000" color="#FEFBFB" id="password" displayAsPassword="true"/>
+			<s:TextInput x="90" y="15" width="130" text="1073" color="#FCFBFB" id="agentNo"/>
+			<s:TextInput x="90" y="78" width="130" text="1702" color="#FDFCFC" id="deviceNo"/>
+			<s:Label x="26" y="48" color="#FFFBFB" fontFamily="中易黑体" fontSize="15"
+					 fontWeight="normal" text="密码"/>
+			<s:Label x="26" y="77" color="#FFFBFB" fontFamily="中易黑体" fontSize="15"
+					 fontWeight="normal" text="分机"/>
+			<s:Button x="151" y="111" width="69" label="取消" color="#FEFEFE" click="cancerWindows()"/>
+			<s:Button x="24" y="110" width="69" label="登陆" color="#FEFEFE" click="LoginWindows()"/>
+		</mx:Canvas>
+		<mx:Canvas width="100%" height="100%" label="CTIServer">
+			<s:Label x="15" y="12" color="#FFFBFB" fontFamily="中易黑体" fontSize="15"
+					 fontWeight="normal" text="CTIServer"/>
+			<s:Label x="15" y="48" color="#FFFBFB" fontFamily="中易黑体" fontSize="15"
+					 fontWeight="normal" text="Port"/>
+			<s:TextInput x="101" y="10" width="130" color="#FDFDFD" id="CTIServers" />
+			<s:TextInput x="101" y="46" width="130" color="#FFFEFE" id="ports"/>
+		</mx:Canvas>
+		<mx:Canvas width="100%" height="100%" label="IVR">
+			<s:Label x="27" y="19" color="#FFFBFB" fontFamily="中易黑体" fontSize="15"
+					 fontWeight="normal" text="报工号"/>
+			<s:Label x="28" y="62" color="#FFFBFB" fontFamily="中易黑体" fontSize="15"
+					 fontWeight="normal" text="满意度"/>
+			<s:Label x="28" y="105" color="#FFFBFB" fontFamily="中易黑体" fontSize="15"
+					 fontWeight="normal" text="UUI"/>
+			<s:TextInput x="105" y="15" width="130" color="#FEFCFC" id="ReportnumberIVRs"/>
+			<s:TextInput x="106" y="62" width="130" color="#FCFAFA" id="satisfactionIVRs"/>
+			<s:TextInput x="106" y="105" width="130" color="#FCFAFA" id="UUIs"/>
+		</mx:Canvas>
+	</mx:TabNavigator>
+</s:Application>

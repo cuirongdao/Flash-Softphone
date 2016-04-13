@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+<CTIServer1>172.16.2.65</CTIServer1>
+<port1>8123</port1>
+<ReportnumberIVR></ReportnumberIVR>
+<satisfactionIVR>6834</satisfactionIVR>
+<UUI>VDN:%VDN%!ANI:%ANI%!DNIS:%DNIS%</UUI>
+<skill>4103</skill>
+<logpath>E:/logs/</logpath>
+<ServerAdress>172.16.2.67</ServerAdress>
+</config>
+

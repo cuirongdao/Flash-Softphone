@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600">
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			import mx.controls.Alert;
+			
+			public function remotingSayHello(deviceId:String,logMessage:String):void{    
+				
+				try
+				{
+					
+					remoteSay.writelogs(deviceId,logMessage,"E:/logs/"); 
+					//Alert.show(login.getLogpath() + logMessage);
+					//Alert.show(logMessage);
+				} 
+				catch(error:Error) 
+				{
+					Alert.show("error :" + error.message);
+				}
+				
+			} 
+			
+			protected function remoteSay_resultHandler(event:ResultEvent):void
+			{
+				// TODO Auto-generated method stub
+				//Alert.show("resultEvent : --  "+event.result.a);
+				
+			}
+			
+			protected function remoteSay_faultHandler(event:FaultEvent):void
+			{
+				// TODO Auto-generated method stub
+				//Alert.show("faultEvent :" + event.fault.message);
+				
+			}
+			
+			public function test():void{
+				for(var i:int=0;i<10;i++){
+					remotingSayHello("1123","test log"+i);
+				}
+			}
+
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<s:RemoteObject id="remoteSay" destination="writelog" result="remoteSay_resultHandler(event)"
+						fault="remoteSay_faultHandler(event)"
+						endpoint="http://localhost:8021/flexBlazeds/messagebroker/amf"
+						showBusyCursor="true"/>
+		
+	</fx:Declarations>
+	
+	<s:Button x="195" y="146" width="106" height="61" label="test log" click="test()" fontSize="22"/>
+	<s:TextInput x="173" y="266"/>
+	
+</s:Application>
