@@ -16,14 +16,14 @@ package connector
 	import mx.controls.Alert;
 	import mx.controls.List;
 	
-
+	
 	public class TCPconnector 
 	{
 		public function TCPconnector()
 		{
 			
 		}
-
+		
 		var nowtime:String = "";
 		var request:String = "";
 		var sessionId:String = "";
@@ -43,8 +43,8 @@ package connector
 		
 		
 		public function initApp(ServerAddress:String,port:int):void{
-
-    
+			
+			
 			RserverAddress = ServerAddress;
 			Rport = port;
 			
@@ -56,9 +56,9 @@ package connector
 				socket.addEventListener(Event.CLOSE,OnEventfunClose);	
 				socket.addEventListener(ProgressEvent.SOCKET_DATA,onSocketData);
 				
-//				//Alert.show(ServerAddress +"---"+port);
-//				timer.addEventListener(TimerEvent.TIMER , sendHeartBeat);
-//				timer.start();
+				//				//Alert.show(ServerAddress +"---"+port);
+				//				timer.addEventListener(TimerEvent.TIMER , sendHeartBeat);
+				//				timer.start();
 			} 
 			catch(error:Error) 
 			{
@@ -66,7 +66,7 @@ package connector
 				Alert.show("error=" + error.message);
 			}
 			
-
+			
 		}
 		
 		
@@ -75,7 +75,7 @@ package connector
 			
 			RserverAddress = ServerAddress;
 			Rport = port;
-
+			
 			try
 			{
 				socketback.connect(ServerAddress,port);
@@ -85,15 +85,15 @@ package connector
 				
 				if(socket!=null){
 					
-				socket.close();
-				
+					socket.close();
+					
 				}
 				
 				socket = socketback;
 				
-//				//Alert.show(ServerAddress +"---"+port);
-//				timer.addEventListener(TimerEvent.TIMER , sendHeartBeat);
-//				timer.start();
+				//				//Alert.show(ServerAddress +"---"+port);
+				//				timer.addEventListener(TimerEvent.TIMER , sendHeartBeat);
+				//				timer.start();
 			} 
 			catch(error:Error) 
 			{
@@ -108,19 +108,19 @@ package connector
 		internal function sendMessage(msg:String):void{
 			trace("---------------------"+msg);
 			if(ani==""){
-								
-							}else{
-								sft.remotingSayHello(ani,"Request    "+msg);
-							}
+				
+			}else{
+				sft.remotingSayHello(ani,"Request    "+msg);
+			}
 			
 			var Smessage:ByteArray = new ByteArray();
 			
 			try
 			{	
-		
+				
 				
 				Smessage.writeUTFBytes(msg);
-
+				
 				socket.writeBytes(Smessage);
 				
 				socket.flush();
@@ -147,9 +147,9 @@ package connector
 			datalength = requestbody.length;
 			request ="CT4001" + getdatalength(datalength)+ getInvokeID()+"                                          "+ requestbody ;
 			sendMessage(request);
-//			
-//			datalength = sessionId.length +67;
-//			request ="CT4001" + getdatalength(datalength) + getInvokeID() + "\r\n                                            HeartBeat\r\n"+ sessionId +"\r\n";
+			//			
+			//			datalength = sessionId.length +67;
+			//			request ="CT4001" + getdatalength(datalength) + getInvokeID() + "\r\n                                            HeartBeat\r\n"+ sessionId +"\r\n";
 			heartbeat ++;
 			//sendMessage(request);
 			if(heartbeat>1){
@@ -161,8 +161,8 @@ package connector
 		
 		public function OnEventfunConnect(event:Event):void{
 			message = "初始化连接成功";
-				sft.OninitServer();
-		
+			sft.OninitServer();
+			
 			
 			
 		}
@@ -180,7 +180,7 @@ package connector
 			
 			var dt:Date = new Date();
 			nowtime = dt.fullYear.toString()+"-"+(dt.month+1).toString()+"-"+dt.date.toString()+"|"+dt.hours.toString()+":"+dt.minutes.toString()+":"+dt.seconds.toString()+":"+dt.milliseconds.toString();
-		    
+			
 			return nowtime;
 		}
 		
@@ -189,29 +189,29 @@ package connector
 		var invokeNo:String ="";
 		public function getInvokeID():String{
 			
-				if(invokeid<10){
-					invokeNo = "0000000"+ invokeid.toString();
-				}else if(invokeid>=10&&invokeid<100){
-					invokeNo = "000000"+ invokeid.toString();
-				}else if(invokeid>=100&&invokeid<1000){
-					invokeNo = "00000" + invokeid.toString();
-				}else if(invokeid>=1000&&invokeid<10000){
-					invokeNo = "0000" + invokeid.toString();
-				}else if(invokeid>=10000&&invokeid<100000){
-					invokeNo = "000" + invokeid.toString();
-				}else if(invokeid>=100000&&invokeid<1000000){
-					invokeNo = "00" + invokeid.toString();
-				}else if(invokeid>=1000000&&invokeid<10000000){
-					invokeNo = "0" + invokeid.toString();
-				}else if(invokeid>=10000000&&invokeid<100000000){
-					invokeNo = invokeid.toString();
-				}else{
-					invokeid = 1;
-					invokeNo = "00000001";
-				}
-				invokeid++;
-				
-				return invokeNo;
+			if(invokeid<10){
+				invokeNo = "0000000"+ invokeid.toString();
+			}else if(invokeid>=10&&invokeid<100){
+				invokeNo = "000000"+ invokeid.toString();
+			}else if(invokeid>=100&&invokeid<1000){
+				invokeNo = "00000" + invokeid.toString();
+			}else if(invokeid>=1000&&invokeid<10000){
+				invokeNo = "0000" + invokeid.toString();
+			}else if(invokeid>=10000&&invokeid<100000){
+				invokeNo = "000" + invokeid.toString();
+			}else if(invokeid>=100000&&invokeid<1000000){
+				invokeNo = "00" + invokeid.toString();
+			}else if(invokeid>=1000000&&invokeid<10000000){
+				invokeNo = "0" + invokeid.toString();
+			}else if(invokeid>=10000000&&invokeid<100000000){
+				invokeNo = invokeid.toString();
+			}else{
+				invokeid = 1;
+				invokeNo = "00000001";
+			}
+			invokeid++;
+			
+			return invokeNo;
 		}
 		
 		
@@ -244,8 +244,8 @@ package connector
 		}
 		
 		
-        var requestbody:String = "";
-
+		var requestbody:String = "";
+		
 		public function initCTI():void{
 			var jsonobj = new Object();
 			jsonobj.method = "initSession";
@@ -256,17 +256,17 @@ package connector
 			sendarray[2] = "172.16.0.142";
 			sendarray[3] = "Async";
 			jsonobj.params = sendarray;
-
+			
 			requestbody = json.JSON.encode(jsonobj);
 			datalength = requestbody.length;
 			request ="CT4001" + getdatalength(datalength)+ getInvokeID()+"                                          "+ requestbody ;
-
+			
 			//request ="CT4001" + getdatalength(datalength)+ getInvokeID() + "\r\n                                            initSession\r\nClient" + getdata() + "\r\nAdmin\r\nAdmin\r\nAsync\r\n";
 			sendMessage(request);
 		}
-
+		
 		var ani:String = "";
-
+		
 		public function monitorDevice(DeviceId:String):void{
 			ani = DeviceId;
 			var jsonobj = new Object();
@@ -317,12 +317,32 @@ package connector
 			sendMessage(request);
 			//datalength = sessionId.length + deviceId.length + username.length + password.length + skill.length + stat.length + Suspendreason.length + 86;
 			//request = "CT4001" + getdatalength(datalength) + getInvokeID() + "\r\n                                            setAgentState\r\n" + sessionId + "\r\n" + deviceId +  "\r\n" + username + "\r\n" + password + "\r\n" + skill + "\r\n" + stat +"\r\n"+ Suspendreason + "\r\n" + "1" + "\r\n";
-		//	Alert.show(request);
-
+			//	Alert.show(request);
+			
 		}
 		
 		
-		
+		public function initDesktop(deviceId:String, agentId:String):void{
+			var jsonobj = new Object;
+			jsonobj.method = "initDesktop";
+			jsonobj.object = "cti";
+			var sendarray:Array = new Array();
+			//			var jsonobj1 = new Object;
+			//			jsonobj1.agentId = agentId;
+			//			jsonobj1.deviceId = deviceId;
+			sendarray[0] = agentId;
+			sendarray[1] = deviceId;
+			jsonobj.params = sendarray;
+			requestbody = json.JSON.encode(jsonobj);
+			datalength = requestbody.length;
+			request ="CT4001" + getdatalength(datalength)+ getInvokeID()+"                                          "+ requestbody;
+			sendMessage(request);
+			//			Alert.show("initDesktop发送成功！");
+			
+			//			datalength =  sessionId.length + deviceId.length + CallId.length + 70;
+			//			request = "CT4001" + getdatalength(datalength) + getInvokeID() +"\r\n                                            holdCall\r\n" + sessionId	+ "\r\n" + deviceId + "\r\n" + CallId + "\r\n";
+			//			sendMessage(request);
+		}
 		
 		public function makecall(deviceId:String,dnis:String,uui:String):void{
 			
@@ -342,7 +362,7 @@ package connector
 			//var requestbody1:String = json.JSON.encode(jsonobj1);
 			sendarray[0] = jsonobj1;
 			jsonobj.params=sendarray;
-		//	Alert.show(sessionId+"=============");
+			//	Alert.show(sessionId+"=============");
 			requestbody = json.JSON.encode(jsonobj);
 			datalength = requestbody.length;
 			request ="CT4001" + getdatalength(datalength)+ getInvokeID()+"                                          "+ requestbody;
@@ -365,11 +385,11 @@ package connector
 			request ="CT4001" + getdatalength(datalength)+ getInvokeID()+"                                          "+ requestbody;
 			sendMessage(request);
 			
-//			    datalength =  sessionId.length + deviceId.length + CallId.length + 72;
-//				request = "CT4001" + getdatalength(datalength) + getInvokeID() +"\r\n                                            answerCall\r\n" + sessionId	+ "\r\n" + deviceId + "\r\n" + CallId + "\r\n";
-//				sendMessage(request);
+			//			    datalength =  sessionId.length + deviceId.length + CallId.length + 72;
+			//				request = "CT4001" + getdatalength(datalength) + getInvokeID() +"\r\n                                            answerCall\r\n" + sessionId	+ "\r\n" + deviceId + "\r\n" + CallId + "\r\n";
+			//				sendMessage(request);
 		}
-
+		
 		public function DisconnectCall(deviceId:String,CallId:String):void{
 			var jsonobj = new Object;
 			jsonobj.method = "clearConnection";
@@ -386,9 +406,9 @@ package connector
 			request ="CT4001" + getdatalength(datalength)+ getInvokeID()+"                                          "+ requestbody;
 			sendMessage(request);
 			
-//			datalength =  sessionId.length + deviceId.length + CallId.length + 73;
-//			request = "CT4001" + getdatalength(datalength) + getInvokeID() +"\r\n                                            DisconnCall\r\n" + sessionId	+ "\r\n" + deviceId + "\r\n" + CallId + "\r\n";
-//			sendMessage(request);
+			//			datalength =  sessionId.length + deviceId.length + CallId.length + 73;
+			//			request = "CT4001" + getdatalength(datalength) + getInvokeID() +"\r\n                                            DisconnCall\r\n" + sessionId	+ "\r\n" + deviceId + "\r\n" + CallId + "\r\n";
+			//			sendMessage(request);
 		}
 		
 		public function holdCall(deviceId:String,CallId:String):void{
@@ -408,9 +428,9 @@ package connector
 			sendMessage(request);
 			
 			
-//			datalength =  sessionId.length + deviceId.length + CallId.length + 70;
-//			request = "CT4001" + getdatalength(datalength) + getInvokeID() +"\r\n                                            holdCall\r\n" + sessionId	+ "\r\n" + deviceId + "\r\n" + CallId + "\r\n";
-//			sendMessage(request);
+			//			datalength =  sessionId.length + deviceId.length + CallId.length + 70;
+			//			request = "CT4001" + getdatalength(datalength) + getInvokeID() +"\r\n                                            holdCall\r\n" + sessionId	+ "\r\n" + deviceId + "\r\n" + CallId + "\r\n";
+			//			sendMessage(request);
 		}
 		
 		public function RetrieveCall(deviceId:String,CallId:String):void{
@@ -428,10 +448,10 @@ package connector
 			datalength = requestbody.length;
 			request ="CT4001" + getdatalength(datalength)+ getInvokeID()+"                                          "+ requestbody;
 			sendMessage(request);
-
-//			datalength =  sessionId.length + deviceId.length + CallId.length + 74;
-//			request = "CT4001" + getdatalength(datalength) + getInvokeID() +"\r\n                                            RetrieveCall\r\n" + sessionId	+ "\r\n" + deviceId + "\r\n" + CallId + "\r\n";
-//			sendMessage(request);
+			
+			//			datalength =  sessionId.length + deviceId.length + CallId.length + 74;
+			//			request = "CT4001" + getdatalength(datalength) + getInvokeID() +"\r\n                                            RetrieveCall\r\n" + sessionId	+ "\r\n" + deviceId + "\r\n" + CallId + "\r\n";
+			//			sendMessage(request);
 		}
 		
 		public function consultationCall(deviceId:String,ActiveCallID:String,ConsultationDeviceId:String,UUI:String):void{
@@ -458,14 +478,14 @@ package connector
 			request ="CT4001" + getdatalength(datalength)+ getInvokeID()+"                                          "+ requestbody;
 			sendMessage(request);
 			
-//			datalength =  sessionId.length + deviceId.length + ActiveCallID.length + ConsultationDeviceId.length + CallType.length + UUI.length +84 ;
-//			request = "CT4001" + getdatalength(datalength) + getInvokeID() +"\r\n                                            consultationCall\r\n" + sessionId + "\r\n" + deviceId + "\r\n" + ActiveCallID + "\r\n" + ConsultationDeviceId + "\r\n" + CallType + "\r\n" + UUI + "\r\n"; 
-//			sendMessage(request);
+			//			datalength =  sessionId.length + deviceId.length + ActiveCallID.length + ConsultationDeviceId.length + CallType.length + UUI.length +84 ;
+			//			request = "CT4001" + getdatalength(datalength) + getInvokeID() +"\r\n                                            consultationCall\r\n" + sessionId + "\r\n" + deviceId + "\r\n" + ActiveCallID + "\r\n" + ConsultationDeviceId + "\r\n" + CallType + "\r\n" + UUI + "\r\n"; 
+			//			sendMessage(request);
 		}
 		
 		public function SingleStepTransferCall(deviceId:String,CallId:String,Transferdeivce:String,UUI:String):void{
 			
-//			var map1:Object = (json.JSON.decode(UUI) as Object);
+			//			var map1:Object = (json.JSON.decode(UUI) as Object);
 			
 			var jsona = new Object;
 			var map = new Object;
@@ -489,9 +509,9 @@ package connector
 			request ="CT4001" + getdatalength(datalength)+ getInvokeID()+"                                          "+ requestbody;
 			sendMessage(request);
 			
-//			datalength =  sessionId.length + deviceId.length + CallId.length + Transferdeivce.length + CallType.length + UUI.length + 86;
-//			request = "CT4001" + getdatalength(datalength) + getInvokeID() +"\r\n                                            SingleStepTransfer\r\n" + sessionId	+ "\r\n" + deviceId + "\r\n" + CallId + "\r\n" + Transferdeivce +"\r\n"+ CallType + "\r\n" + UUI + "\r\n";
-//			sendMessage(request);	
+			//			datalength =  sessionId.length + deviceId.length + CallId.length + Transferdeivce.length + CallType.length + UUI.length + 86;
+			//			request = "CT4001" + getdatalength(datalength) + getInvokeID() +"\r\n                                            SingleStepTransfer\r\n" + sessionId	+ "\r\n" + deviceId + "\r\n" + CallId + "\r\n" + Transferdeivce +"\r\n"+ CallType + "\r\n" + UUI + "\r\n";
+			//			sendMessage(request);	
 		}
 		
 		public function transferCall(KeepdeviceId:String,KeepCallId:String,NowCallId:String):void{
@@ -512,13 +532,13 @@ package connector
 			sendMessage(request);
 			
 			
-//			datalength = sessionId.length + KeepdeviceId.length + KeepCallId.length + NowdeviceId.length + NowCallId.length +78;
-//			request = "CT4001" + getdatalength(datalength) + getInvokeID() +"\r\n                                            transferCall\r\n" + sessionId	+ "\r\n" + KeepdeviceId + "\r\n" + KeepCallId + "\r\n" + NowdeviceId + "\r\n" + NowCallId + "\r\n";
-//			sendMessage(request);
+			//			datalength = sessionId.length + KeepdeviceId.length + KeepCallId.length + NowdeviceId.length + NowCallId.length +78;
+			//			request = "CT4001" + getdatalength(datalength) + getInvokeID() +"\r\n                                            transferCall\r\n" + sessionId	+ "\r\n" + KeepdeviceId + "\r\n" + KeepCallId + "\r\n" + NowdeviceId + "\r\n" + NowCallId + "\r\n";
+			//			sendMessage(request);
 		}
-			
+		
 		public function conferenceCall(KeepdeviceId:String,KeepCallId:String,NowCallId:String):void{
-
+			
 			var jsonobj = new Object;
 			jsonobj.method = "conferenceCall";
 			jsonobj.object = "cti";
@@ -538,9 +558,9 @@ package connector
 			
 			
 			//			datalength = sessionId.length + KeepdeviceId.length + KeepCallId.length + NowdeviceId.length + NowCallId.length +80;
-//			request = "CT4001" + getdatalength(datalength) + getInvokeID() +"\r\n                                            conferenceCall\r\n" + sessionId	+ "\r\n" + KeepdeviceId + "\r\n" + KeepCallId + "\r\n" + NowdeviceId + "\r\n" + NowCallId + "\r\n";
-//			sendMessage(request);
-		
+			//			request = "CT4001" + getdatalength(datalength) + getInvokeID() +"\r\n                                            conferenceCall\r\n" + sessionId	+ "\r\n" + KeepdeviceId + "\r\n" + KeepCallId + "\r\n" + NowdeviceId + "\r\n" + NowCallId + "\r\n";
+			//			sendMessage(request);
+			
 		}
 		
 		
@@ -549,9 +569,9 @@ package connector
 			datalength = sessionId.length + KeepdeviceId.length + KeepCallId.length + NowdeviceId.length + NowCallId.length +79;
 			request = "CT4001" + getdatalength(datalength) + getInvokeID() +"\r\n                                            alternateCall\r\n" + sessionId	+ "\r\n" + KeepdeviceId + "\r\n" + KeepCallId + "\r\n" + NowdeviceId + "\r\n" + NowCallId + "\r\n";
 			sendMessage(request);
-	
-		}
 			
+		}
+		
 		public function reconnectCall(KeepdeviceId:String,KeepCallId:String,NowdeviceId:String,NowCallId:String):void{ //重连
 			
 			var jsonobj = new Object;
@@ -570,9 +590,9 @@ package connector
 			request ="CT4001" + getdatalength(datalength)+ getInvokeID()+"                                          "+ requestbody;
 			sendMessage(request);
 			
-//			datalength = sessionId.length + KeepdeviceId.length + KeepCallId.length + NowdeviceId.length + NowCallId.length +79;
-//			request = "CT4001" + getdatalength(datalength) + getInvokeID() +"\r\n                                            reconnectCall\r\n" + sessionId	+ "\r\n" + KeepdeviceId + "\r\n" + KeepCallId + "\r\n" + NowdeviceId + "\r\n" + NowCallId + "\r\n";
-//			sendMessage(request);
+			//			datalength = sessionId.length + KeepdeviceId.length + KeepCallId.length + NowdeviceId.length + NowCallId.length +79;
+			//			request = "CT4001" + getdatalength(datalength) + getInvokeID() +"\r\n                                            reconnectCall\r\n" + sessionId	+ "\r\n" + KeepdeviceId + "\r\n" + KeepCallId + "\r\n" + NowdeviceId + "\r\n" + NowCallId + "\r\n";
+			//			sendMessage(request);
 		}
 		
 		public function SingleStepConference(ConferenceDevice:String,ConferencedDevice:String,NowCallId:String,UUI:String):void{
@@ -600,10 +620,10 @@ package connector
 			sendMessage(request);
 			
 			
-//			datalength = sessionId.length + ConferenceDevice.length + ConferencedDevice.length+  ConferenceType.length + 84 ;
-//			request = "CT4001" + getdatalength(datalength) + getInvokeID() +"\r\n                                            SingleStepConference\r\n" + sessionId	+ "\r\n" + ConferenceDevice + "\r\n" + ConferencedDevice + "\r\n" + ConferenceType + "\r\n" ;
-//			sendMessage(request);
-		    
+			//			datalength = sessionId.length + ConferenceDevice.length + ConferencedDevice.length+  ConferenceType.length + 84 ;
+			//			request = "CT4001" + getdatalength(datalength) + getInvokeID() +"\r\n                                            SingleStepConference\r\n" + sessionId	+ "\r\n" + ConferenceDevice + "\r\n" + ConferencedDevice + "\r\n" + ConferenceType + "\r\n" ;
+			//			sendMessage(request);
+			
 		}
 		
 		public function QueryAgentState(deviceID:String,agentid:String):void{
@@ -617,15 +637,15 @@ package connector
 			
 		}
 		
-	
+		
 		var sft:ClientFunction;
 		
 		public function AddClient(client:ClientFunction):void{
 			
-
+			
 			sft=client; 
-
-
+			
+			
 		}
 		
 		var setagentfailed:Boolean = true;
@@ -656,7 +676,7 @@ package connector
 				//Alert.show("messagebody : "+responsename + " messagetype : " + messagetype);
 				
 				if(container.method=="initSession"){
- 					sessionId=container.ret.sessionId;
+					sessionId=container.ret.sessionId;
 					sft.OninitApp(sessionId);
 					timer.addEventListener(TimerEvent.TIMER , sendHeartBeat);
 					timer.start();
@@ -669,13 +689,14 @@ package connector
 				}
 				
 				if(arrs[2]=="stopMonitorDevice"){
-//				   sft.OnstopMonitorDevice(arrs[3],arrs[4],arrs[5],arrs[6]);
-				   
+					//				   sft.OnstopMonitorDevice(arrs[3],arrs[4],arrs[5],arrs[6]);
+					
 				}
 				
 				if(arrs[2]=="setAgentState"){
+					
 					//Alert.show("loginsuccessed-------------");
-//						if(arrs[7]=="0"){
+					//						if(arrs[7]=="0"){
 				}
 				
 				if(container.method=="heartbeat"){  //2016.3.8 孙璐 修改内容（arrs[2]->container.method  HeartBeat-> heartbeat）
@@ -686,8 +707,8 @@ package connector
 				if(arrs[2]=="QueryAgentState"){
 					//sft.OnQueryAgentState(arrs[3],arrs[4],arrs[5],arrs[6],arrs[7],arrs[8]);
 				}
-	
-
+				
+				
 			}
 			
 			if(messagetype=="99"){
@@ -698,12 +719,12 @@ package connector
 				}
 				
 				if(container.name=="connectionCleared"){  //清除连接--挂断
-						
+					
 					sft.OnConnectionCleared(container.source,container.timestamp,container.properties.releasingDevice,container.properties.contactId,container.properties.callId,container.properties.deviceId,container.properties.connectionState,container.properties.srcDeviceId,container.properties._sessionId);
 				}
 				
 				if(container.name=="agentNotReady"){  //离席
-
+					
 					sft.OnagentNotReady(container.source,container.timestamp,container.properties.reason,container.properties.deviceId,container.properties.agentId,container.properties.agentMode,container.properties.srcDeviceId,container.properties._sessionId);
 					setagentfailed=false;
 				}
@@ -725,16 +746,19 @@ package connector
 					sft.OnagentLoggedOff(container.source,container.timestamp,container.properties.deviceId,container.properties.agentId,container.properties.agentMode,container.properties.srcDeviceId,container.properties._sessionId);
 					//setagentfailed=false;
 				}
-
+				
 				if(container.name=="delivered"){  //振铃
-					sft.OnDelivered(container.source,container.timestamp,container.properties.alertingDevice,container.properties.callingDevice,container.properties.calledDevice,container.properties.originalContactId,container.properties.contactId,container.properties.callId,container.properties.deviceId,container.properties.connectionState,container.properties.srcDeviceId,container.properties._sessionId);
+					var userData:String = "";
+					userData = json.JSON.encode(container.properties.userData);
+					//					Alert.show(userData);
+					sft.OnDelivered(container.source,container.timestamp,container.properties.alertingDevice,container.properties.callingDevice,container.properties.calledDevice,container.properties.originalContactId,container.properties.contactId,container.properties.callId,container.properties.deviceId,container.properties.connectionState,container.properties.srcDeviceId,userData);
 				}
 				
-				
-				
 				if(container.name=="established"){  //电话接通
+					var userData:String = "";
+					userData = json.JSON.encode(container.properties.userData);
 					
-					sft.OnEstablished(container.source,container.timestamp,container.properties.answeringDevice,container.properties.callingDevice,container.properties.calledDevice,container.properties.contactId,container.properties.callId,container.properties.deviceId,container.properties.connectionState,container.properties.srcDeviceId,container.properties._sessionId);
+					sft.OnEstablished(container.source,container.timestamp,container.properties.answeringDevice,container.properties.callingDevice,container.properties.calledDevice,container.properties.contactId,container.properties.callId,container.properties.deviceId,container.properties.connectionState,container.properties.srcDeviceId,userData);
 				}
 				
 				if(container.name=="held"){ //保持
@@ -770,7 +794,7 @@ package connector
 				Alert.show("messagebody : "+responsename + " messagetype : " + messagetype);
 				//Alert.show("--------------------Exception");
 				if(arrs[2]=="setAgentState"){
-
+					
 					if(setagentfailed==true){
 						sft.faillogin(arrs[7]);
 					}
@@ -835,7 +859,7 @@ package connector
 				
 			}
 			
-
+			
 		}
 		
 		
@@ -957,16 +981,16 @@ package connector
 			
 		}
 		
-
 		
-
+		
+		
 		private function onSocketData( eventrogressEvent ):void {
 			
 			try
 				
 			{
 				
-			
+				
 				//var string:String = socket.readUTFBytes(socket.bytesAvailable);
 				
 				//Alert.show(string);
@@ -976,55 +1000,55 @@ package connector
 				
 				socket.readBytes(buf,0,socket.bytesAvailable);
 				//Alert.show(buf.toString());
-			
-
+				
+				
 			} 
 			catch(error:IOError) 
 			{
 				Alert.show("socket error :" + error.message);
 			}
 			
-
+			
 			
 			for(var j:int=0;j<buf.length; j++){
-				 
-				 bufferArray[bufferArray.length] = buf[j];
-				 
+				
+				bufferArray[bufferArray.length] = buf[j];
+				
 			}
 			
 			var eventStr:String = new String(bufferArray);
 			trace("****************************");
 			trace(eventStr);
-	
+			
 			
 			var headbuf:ByteArray = new ByteArray();
 			
 			var head:String ="";
-
-			if(bufferArray.length>=64){
 			
+			if(bufferArray.length>=64){
+				
 				for(var i:int = 0; i<64; i++){
 					headbuf[i] = bufferArray[i];
 				}
 				
-			
-			head = headbuf.toString().substring(0,4);
-			
-
-			if(head=="CT40"){
 				
-			judgemessage(bufferArray);
-			
-			}else{
+				head = headbuf.toString().substring(0,4);
 				
-				Alert.show("TCP Information Error");
+				
+				if(head=="CT40"){
+					
+					judgemessage(bufferArray);
+					
+				}else{
+					
+					Alert.show("TCP Information Error");
+					
+				}
 				
 			}
 			
-			}
-
 		}
-
+		
 	}
 	
 }

@@ -123,7 +123,13 @@
 				ExternalInterface.call("OnagentNotReady",source,timestamp,reason,deviceId,agentId,agentMode,srcDeviceId,_sessionId);
 			}
 			
+			var temp:int = 1;
+			
 			public	function OnagentLoggedOn(source:String,timestamp:String,groupId:String,deviceId:String,agentId:String,agentMode:String,srcDeviceId:String,_sessionId:String):void{
+				if (temp == 1){
+					tcpconn.initDesktop(deviceId,agentId);
+					temp++;
+				}
 				ExternalInterface.call("OnagentLoggedOn",source,timestamp,groupId,deviceId,agentId,agentMode,srcDeviceId,_sessionId);
 			}
 			
@@ -133,14 +139,15 @@
 			
 			public	function OnagentLoggedOff(source:String,timestamp:String,deviceId:String,agentId:String,agentMode:String,srcDeviceId:String,_sessionId:String):void{
 				ExternalInterface.call("OnagentLoggedOff",source,timestamp,deviceId,agentId,agentMode,srcDeviceId,_sessionId);
+				temp = 1;
 			}
 			
-			public	function OnDelivered(source:String,timestamp:String,alertingDevice:String,callingDevice:String,calledDevice:String,originalContactId:String,contactId:String,callId:String,deviceId:String,connectionState:String,srcDeviceId:String,_sessionId:String):void{
-				ExternalInterface.call("OnDelivered",source,timestamp,alertingDevice,callingDevice,calledDevice,originalContactId,contactId,callId,deviceId,connectionState,srcDeviceId,_sessionId);
+			public	function OnDelivered(source:String,timestamp:String,alertingDevice:String,callingDevice:String,calledDevice:String,originalContactId:String,contactId:String,callId:String,deviceId:String,connectionState:String,srcDeviceId:String,userData:String):void{
+				ExternalInterface.call("OnDelivered",source,timestamp,alertingDevice,callingDevice,calledDevice,originalContactId,contactId,callId,deviceId,connectionState,srcDeviceId,userData);
 			}
 			
-			public	function OnEstablished(source:String,timestamp:String,answeringDevice:String,callingDevice:String,calledDevice:String,contactId:String,callId:String,deviceId:String,connectionState:String,srcDeviceId:String,_sessionId:String):void{
-				ExternalInterface.call("OnEstablished",source,timestamp,answeringDevice,callingDevice,calledDevice,contactId,callId,deviceId,connectionState,srcDeviceId,_sessionId);
+			public	function OnEstablished(source:String,timestamp:String,answeringDevice:String,callingDevice:String,calledDevice:String,contactId:String,callId:String,deviceId:String,connectionState:String,srcDeviceId:String,userData:String):void{
+				ExternalInterface.call("OnEstablished",source,timestamp,answeringDevice,callingDevice,calledDevice,contactId,callId,deviceId,connectionState,srcDeviceId,userData);
 			}
 			
 			public	function OnHold(source:String,timestamp:String,holdingDevice:String,contactId:String,callId:String,deviceId:String,connectionState:String,srcDeviceId:String,_sessionId:String):void{
@@ -170,16 +177,16 @@
 			
 			
 			
-//			public function asFunc(a:String,b:String):String {
-//				Alert.show(a +"----" +b);
-//				return sending_ti.text;
-//				
-//			}
+			//			public function asFunc(a:String,b:String):String {
+			//				Alert.show(a +"----" +b);
+			//				return sending_ti.text;
+			//				
+			//			}
 			
 			public function initApps():void {
 				//AddCallback方法允许javascript调用flash时间上函数 
 				tcpconn.AddClient(this);
-//				ExternalInterface.addCallback("flexFunctionAlias", asFunc);
+				//				ExternalInterface.addCallback("flexFunctionAlias", asFunc);
 				ExternalInterface.addCallback("initSession", initApp);
 				ExternalInterface.addCallback("initCTI", initCTI);
 				ExternalInterface.addCallback("monitorDevice", monitorDevice);
@@ -197,17 +204,17 @@
 				ExternalInterface.addCallback("SingleStepConference", SingleStepConference);
 			}
 			
-//			public function callWrapper():void {      
-//				var f:String = "changeDocumentTitle";
-//				//ExternalInterface.call(functionName:String,Parameters)可以调用javascript函数
-//				//参数1: functionName – 你想要调用的javascript函数名要以字符串的形式
-//				//参数2: Parameters – 需要传递给javascript函数的参数，用逗号分开，是可选的。              
-//				var getJSValue:String = ExternalInterface.call(f,"New Title","old title");
-//				received_ti.text = getJSValue;
-//			}
+			//			public function callWrapper():void {      
+			//				var f:String = "changeDocumentTitle";
+			//				//ExternalInterface.call(functionName:String,Parameters)可以调用javascript函数
+			//				//参数1: functionName – 你想要调用的javascript函数名要以字符串的形式
+			//				//参数2: Parameters – 需要传递给javascript函数的参数，用逗号分开，是可选的。              
+			//				var getJSValue:String = ExternalInterface.call(f,"New Title","old title");
+			//				received_ti.text = getJSValue;
+			//			}
 			
 		]]>
 	</fx:Script>
-
+	
 	
 </s:Application>

@@ -91,7 +91,7 @@
 				
 			}
 			
-			public function call2time(event:TimerEvent):void{		//获取第二个通话的通话时间
+			public function call2time(event:TimerEvent):void{
 				var hour:String = "00";
 				var min:String = "00";
 				var sec:String = "00";
@@ -356,7 +356,7 @@
 			}
 			
 			public function OninitServer():void{
-			//Alert.show("...................");
+				//Alert.show("...................");
 				Timerinit.addEventListener(TimerEvent.TIMER , initServer);
 				Timerinit.start();
 			}
@@ -619,8 +619,12 @@
 			public function OnagentNotReady(source:String,timestamp:String,reason:String,deviceId:String,agentId:String,agentMode:String,srcDeviceId:String,_sessionId:String):void{
 				AgentStat.text = "离席";
 			}
-			
+			var temp:int = 1;
 			public function OnagentLoggedOn(source:String,timestamp:String,groupId:String,deviceId:String,agentId:String,agentMode:String,srcDeviceId:String,_sessionId:String):void{
+				if (temp == 1){
+					tcpconn.initDesktop(deviceId,agentId);
+					temp++;
+				}
 				AgentId.text = agentId;
 				AgentStat.text = "登陆";
 			}
@@ -631,6 +635,7 @@
 			
 			public 	function OnagentLoggedOff(source:String,timestamp:String,deviceId:String,agentId:String,agentMode:String,srcDeviceId:String,_sessionId:String):void{
 				AgentStat.text = "退出";
+				temp = 1;
 			}
 			
 			
@@ -1379,7 +1384,7 @@
 			
 			public function selectComboValueFunt(evt:MouseEvent):void {  
 				// value=combo.selectedItem.toString();  
-				var test:String = "";
+				var test:String = "aaaqqq";
 				valuet = textinputt.text.toString();
 				if(valuet==""){
 					Alert.show("请输入号码！");
@@ -1509,7 +1514,7 @@
 					satisfactionIVR = xml.children()[3].toString();
 					UUI = xml.children()[4].toString();
 					logpath = xml.children()[6].toString();
-
+					
 				} 
 				catch(error:Error) 
 				{
@@ -1679,7 +1684,7 @@
 	</s:TitleWindow>
 	<mx:TabNavigator x="735" y="2" width="248" height="174" id="loginwindow" visible="false">
 		<mx:Canvas width="100%" height="100%" label="登陆" fontSize="17" fontStyle="normal"
-					 fontWeight="normal">
+				   fontWeight="normal">
 			<s:Label x="26" y="16" color="#FFFBFB" fontFamily="中易黑体" fontSize="15"
 					 fontWeight="normal" text="工号"/>
 			<s:Label x="26" y="48" color="#FFFBFB" fontFamily="中易黑体" fontSize="15"
