@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
 			   
 			   xmlns:s="library://ns.adobe.com/flex/spark"
@@ -619,7 +619,7 @@
 			public function OnagentNotReady(source:String,timestamp:String,reason:String,deviceId:String,agentId:String,agentMode:String,srcDeviceId:String,_sessionId:String):void{
 				AgentStat.text = "离席";
 			}
-			var temp:int = 1;
+			var temp:int = 1; //标记initDesktop调用，只调用一次
 			public function OnagentLoggedOn(source:String,timestamp:String,groupId:String,deviceId:String,agentId:String,agentMode:String,srcDeviceId:String,_sessionId:String):void{
 				if (temp == 1){
 					tcpconn.initDesktop(deviceId,agentId);
