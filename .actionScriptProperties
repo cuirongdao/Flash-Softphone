@@ -18,7 +18,6 @@
     <application path="Softphone.mxml"/>
     <application path="WebSoftphone.mxml"/>
     <application path="JsConnector.mxml"/>
-    <application path="SoftphoneDemo.mxml"/>
   </applications>
   <modules/>
   <buildCSSFiles/>

@@ -91,7 +91,7 @@
 				
 			}
 			
-			public function call2time(event:TimerEvent):void{
+			public function call2time(event:TimerEvent):void{		//获取第二个通话的通话时间
 				var hour:String = "00";
 				var min:String = "00";
 				var sec:String = "00";
