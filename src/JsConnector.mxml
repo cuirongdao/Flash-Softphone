@@ -123,6 +123,10 @@
 				ExternalInterface.call("OnagentNotReady",source,timestamp,reason,deviceId,agentId,agentMode,srcDeviceId,_sessionId);
 			}
 			
+			public function OnagentWorkingAfterCall(source:String,timestamp:String,deviceId:String,agentId:String,agentMode:String,srcDeviceId:String,_sessionId:String):void{
+				ExternalInterface.call("OnagentWorkNotReady",source,timestamp,deviceId,agentId,agentMode,srcDeviceId,_sessionId);
+			}
+			
 			var temp:int = 1;
 			
 			public	function OnagentLoggedOn(source:String,timestamp:String,groupId:String,deviceId:String,agentId:String,agentMode:String,srcDeviceId:String,_sessionId:String):void{

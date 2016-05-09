@@ -729,6 +729,12 @@ package connector
 					setagentfailed=false;
 				}
 				
+				if(container.name=="agentWorkingAfterCall"){  //话后处理
+					
+					sft.OnagentWorkingAfterCall(container.source,container.timestamp,container.properties.deviceId,container.properties.agentId,container.properties.agentMode,container.properties.srcDeviceId,container.properties._sessionId);
+					//					setagentfailed=false;
+				}
+				
 				if(container.name=="agentLoggedOn"){  //登录
 					
 					sft.OnagentLoggedOn(container.source,container.timestamp,container.properties.groupId,container.properties.deviceId,container.properties.agentId,container.properties.agentMode,container.properties.srcDeviceId,container.properties._sessionId);

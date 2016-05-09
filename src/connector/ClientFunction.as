@@ -22,6 +22,8 @@ package connector
 	
 		function OnagentNotReady(source:String,timestamp:String,reason:String,deviceId:String,agentId:String,agentMode:String,srcDeviceId:String,_sessionId:String):void;
 		
+		function OnagentWorkingAfterCall(source:String,timestamp:String,deviceId:String,agentId:String,agentMode:String,srcDeviceId:String,_sessionId:String):void;
+		
 		function OnagentLoggedOn(source:String,timestamp:String,groupId:String,deviceId:String,agentId:String,agentMode:String,srcDeviceId:String,_sessionId:String):void;
 
 		function OnagentReady(source:String,timestamp:String,deviceId:String,agentId:String,agentMode:String,srcDeviceId:String,_sessionId:String):void;

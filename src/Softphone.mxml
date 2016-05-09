@@ -217,7 +217,7 @@
 					
 				}
 				if(event.item["label"]=="话后处理"){
-					tcpconn.setAgentState("setAgentState",deviceId,AgentNo,AgentPassword,null,"NotReady","SetState","0");
+					tcpconn.setAgentState("setAgentState",deviceId,AgentNo,AgentPassword,null,"WorkNotReady","SetState","0");
 					
 				}
 				if(event.item["label"]=="开会"){
@@ -619,6 +619,11 @@
 			public function OnagentNotReady(source:String,timestamp:String,reason:String,deviceId:String,agentId:String,agentMode:String,srcDeviceId:String,_sessionId:String):void{
 				AgentStat.text = "离席";
 			}
+			
+			public function OnagentWorkingAfterCall(source:String,timestamp:String,deviceId:String,agentId:String,agentMode:String,srcDeviceId:String,_sessionId:String):void{
+				AgentStat.text = "话后处理";
+			}
+			
 			var temp:int = 1; //标记initDesktop调用，只调用一次
 			public function OnagentLoggedOn(source:String,timestamp:String,groupId:String,deviceId:String,agentId:String,agentMode:String,srcDeviceId:String,_sessionId:String):void{
 				if (temp == 1){
