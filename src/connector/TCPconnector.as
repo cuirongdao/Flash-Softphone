@@ -799,10 +799,11 @@ package connector
 			if(messagetype=="11"){
 				Alert.show("messagebody : "+responsename + " messagetype : " + messagetype);
 				//Alert.show("--------------------Exception");
-				if(arrs[2]=="setAgentState"){
+				if(container.method=="setAgentState"){
 					
 					if(setagentfailed==true){
-						sft.faillogin(arrs[7]);
+						//						sft.faillogin(arrs[7]);
+						sft.faillogin(container.errMessage);
 					}
 					
 				}
