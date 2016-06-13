@@ -100,7 +100,7 @@ package org.gif.player
 				
 			} catch ( e:Error )
 			{
-				throw new Error ("An unknown error occured, make sure the GIF file contains at least one frame\nNumber of frames : " + aFrames.length);	
+				throw new Error ("An unknown error occurred, make sure the GIF file contains at least one frame\nNumber of frames : " + aFrames.length);	
 			}
 
 		}
